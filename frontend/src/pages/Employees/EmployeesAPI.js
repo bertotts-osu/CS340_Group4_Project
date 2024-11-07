@@ -1,6 +1,6 @@
 export async function getEmployeeData() {
-    //const response = await fetch("http://classwork.engr.oregonstate.edu:4569");
-    const response = await fetch("http://localhost:8080/employees");
+    const response = await fetch("http://classwork.engr.oregonstate.edu:4569/employees");
+    // const response = await fetch("http://localhost:8080/employees");
     console.log("Response status:", response.status);
     if (!response.ok) {       // ok is a boolean method of the Response object
       const error = new Error("An error occured while fetching the MySQLResult");
