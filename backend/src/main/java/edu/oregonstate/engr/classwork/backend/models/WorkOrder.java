@@ -6,7 +6,7 @@ import java.util.Objects;
 @Data //automatically generates getters and setters
 public class WorkOrder {
     private int work_order_id;
-    private int size;
+    private String size;
     private String street;
     private String city;
     private String zip;

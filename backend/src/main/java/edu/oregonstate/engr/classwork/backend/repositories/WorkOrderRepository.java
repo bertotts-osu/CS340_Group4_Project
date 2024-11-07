@@ -20,7 +20,7 @@ public class WorkOrderRepository {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             WorkOrder rowObject = new WorkOrder();
             rowObject.setWork_order_id(rs.getInt("work_order_id"));
-            rowObject.setSize(rs.getInt("size"));
+            rowObject.setSize(rs.getString("size"));
             rowObject.setStreet(rs.getString("street"));
             rowObject.setCity(rs.getString("city"));
             rowObject.setZip(rs.getString("zip"));

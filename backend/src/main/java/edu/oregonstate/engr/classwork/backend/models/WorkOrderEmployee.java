@@ -6,4 +6,5 @@ import lombok.Data;
 public class WorkOrderEmployee {
     private int work_order_id;
     private int employee_id;
+    private String assigned_at;
 }
