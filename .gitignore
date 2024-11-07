@@ -1,0 +1,69 @@
+# Node.js
+node_modules/
+dist/
+*.log
+.vscode/
+.DS_Store
+
+# Vite
+.vite/
+.vitepress/
+*.local
+
+# React
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.iws
+*.ipr
+*.project
+*.classpath
+*.factorypath
+*.settings/
+*.springBeans
+target/
+bin/
+out/
+.mvn/
+.mvnw
+.mvnw.cmd
+
+# Maven
+log/
+logs/
+*.log
+*.pid
+*.hprof
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*.patch
+*.diff
+*.tmp
+*.temp
+*.old
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Miscellaneous
+*.http
+*.github/workflows/
