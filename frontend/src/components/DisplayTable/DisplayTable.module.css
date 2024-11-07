@@ -1,0 +1,35 @@
+.tableContainer {
+    max-width: 100%;
+    margin: 20px auto;
+    overflow-x: auto;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid black;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+  
+  .table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .table tbody tr.active-row {
+    font-weight: bold;
+    color: #017961;
+  }
