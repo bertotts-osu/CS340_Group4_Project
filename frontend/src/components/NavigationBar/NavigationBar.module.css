@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: center; /* Center the navigation bar */
+    align-items: center;
+    position: fixed;
+    top: 10;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 0px;
+  }
+  
+  .navList {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    gap: 15px;
+  }
+  
+  .navItem a {
+    color:#006e58;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 5px; /* Adjust padding to control the length of the underline */
+    border-bottom: 2px solid transparent; /* Add a transparent border for spacing */
+    transition: border-bottom 0.3s;
+  }
+  
+  .navItem a:hover {
+    border-bottom: 2px solid black; /* Add a black line underneath on hover */
+  }
+  
+  .active {
+    border-bottom: 2px solid black; /* Add a black line underneath for active links */
+  }
