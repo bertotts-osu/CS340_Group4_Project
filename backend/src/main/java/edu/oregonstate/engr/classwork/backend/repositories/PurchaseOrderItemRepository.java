@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.RoundingMode;
 import java.util.List;
 
 @Repository
@@ -21,7 +22,7 @@ public class PurchaseOrderItemRepository {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             PurchaseOrderItem rowObject = new PurchaseOrderItem();
             rowObject.setPurchase_order_item_id(rs.getInt("purchase_order_item_id"));
-            rowObject.setUnit_cost(rs.getBigDecimal("unit_cost"));
+            rowObject.setUnit_cost(rs.getBigDecimal("unit_cost").setScale(2, RoundingMode.UNNECESSARY));
             rowObject.setQuantity(rs.getInt("quantity"));
             rowObject.setEstimated_delivery_date(rs.getString("estimated_delivery_date"));
             rowObject.setDelivery_type(rs.getString("delivery_type"));
