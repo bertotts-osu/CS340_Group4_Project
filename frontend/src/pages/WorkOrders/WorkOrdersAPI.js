@@ -1,6 +1,5 @@
 export async function getWorkOrderData() {
-    const response = await fetch("http://classwork.engr.oregonstate.edu:4569/work-orders");
-    // const response = await fetch("http://localhost:8080/work-orders");
+    const response = await fetch(import.meta.env.VITE_API_URL + "/work-orders");
     console.log("Response status:", response.status);
     if (!response.ok) {       // ok is a boolean method of the Response object
       const error = new Error("An error occured while fetching the MySQLResult");

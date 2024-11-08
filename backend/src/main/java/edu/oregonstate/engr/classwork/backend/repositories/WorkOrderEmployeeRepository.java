@@ -22,6 +22,7 @@ public class WorkOrderEmployeeRepository {
             WorkOrderEmployee rowObject = new WorkOrderEmployee();
             rowObject.setEmployee_id(rs.getInt("employee_id"));
             rowObject.setWork_order_id(rs.getInt("work_order_id"));
+            rowObject.setAssigned_at(rs.getString("assigned_at"));
             return rowObject;
         });
     }

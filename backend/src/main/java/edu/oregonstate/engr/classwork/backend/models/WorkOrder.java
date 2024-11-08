@@ -9,6 +9,7 @@ public class WorkOrder {
     private String size;
     private String street;
     private String city;
+    private String state;
     private String zip;
     private String stage;
     private String applied_at;

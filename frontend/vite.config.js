@@ -1,14 +1,24 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
 
-export default defineConfig({
-  server: {
-    // For Development Session
-    host: 'localhost'
-    
-    // For Production Session
-    // host: 'classwork.engr.oregonstate.edu',
-    // port: 4571
-  },
-  plugins: [react()],
-})
+export default defineConfig(({ command, mode }) => {
+    const env = loadEnv(mode, process.cwd());
+
+    if (command === "serve") {
+        // dev
+        return {
+            plugins: [react()],
+            // base: env.VITE_BASE,
+            server: {
+                host: env.VITE_SERVER_HOST,
+                port: env.VITE_SERVER_PORT
+            }
+        };
+    } else {
+        // prod
+        return {
+            plugins: [react()],
+            // base: env.VITE_BASE,
+        };
+    }
+});
