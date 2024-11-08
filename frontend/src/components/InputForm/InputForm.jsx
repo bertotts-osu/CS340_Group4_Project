@@ -2,123 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import styles from "./InputForm.module.css";
 
-const tableSchemas = {
-  "Work Orders": {
-    fields: [
-      { label: "Size", type: "text" },
-      { label: "Street", type: "text" },
-      { label: "City", type: "text" },
-      { label: "Zip", type: "text" },
-      {
-        label: "Stage",
-        type: "dropdown",
-        options: [
-          "Applied",
-          "Estimated",
-          "Paid",
-          "Scheduled",
-          "In Progress",
-          "Completed",
-          "On Hold",
-          "Canceled",
-        ],
-      },
-      { label: "Applied At", type: "text" },
-      { label: "Estimated At", type: "text" },
-      { label: "Scheduled At", type: "text" },
-      { label: "Started At", type: "text" },
-      { label: "Completed At", type: "text" },
-      { label: "On Hold At", type: "text" },
-      { label: "Cancelled At", type: "text" },
-    ],
-  },
-  "Employees": {
-    fields: [
-      { label: "Fist Name", type: "text" },
-      { label: "Last Name", type: "text" },
-      { label: "Email", type: "text" },
-      { label: "Phone Number", type: "text" },
-      {
-        label: "Status",
-        type: "dropdown",
-        options: [
-          "Active",
-          "Inactive",
-        ],
-      },
-      {
-        label: "Skill Level",
-        type: "dropdown",
-        options: [
-          "Apprentice",
-          "Associate",
-          "Principal",
-        ],
-      },
-    ],
-  },
-  "Purchase Orders": {
-    fields: [
-      {
-        label: "Employee",
-        type: "dropdown",
-        options: [
-          "Option 1 - pull from db",
-          "Option 2 - pull from db",
-        ],
-      },
-      {
-        label: "Work Order ID",
-        type: "dropdown",
-        options: [
-          "Option 1 - pull from db",
-          "Option 2 - pull from db",
-        ],
-      },
-    ],
-  },
-  "Purchase Order Items": {
-    fields: [
-      { label: "Unit Cost", type: "text" },
-      { label: "Quantity", type: "text"},
-      { label: "Estimated Delivery Date", type: "text"},
-      {
-        label: "Delivery Type",
-        type: "dropdown",
-        options: [
-          "Stock",
-          "Ship",
-        ],
-      },
-      {
-        label: "Material",
-        type: "dropdown",
-        options: [
-          "Option 1 - pull from db",
-          "Option 2 - pull from db",
-        ],
-      },
-    ],
-  },
-  "Materials": {
-    fields: [
-      { label: "Name", type: "text" },
-      {
-        label: "Unit",
-        type: "dropdown",
-        options: [
-          "FT",
-          "EA",
-        ],
-      },
-      { label: "Quantity Available", type: "text" },
-    ],
-  },
-};
-
-export default function InputForm({ table, onCancel }) {
-  const schema = tableSchemas[table];
-
+export default function InputForm({ schema, onCancel }) {
   const [formData, setFormData] = useState({});
 
   const handleChange = (e) => {
@@ -176,6 +60,6 @@ export default function InputForm({ table, onCancel }) {
 }
 
 InputForm.propTypes = {
-  table: PropTypes.string.isRequired,
+  schema: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
