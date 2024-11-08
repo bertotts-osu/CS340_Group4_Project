@@ -20,7 +20,7 @@ const HomePage = () => {
           increase from 200 to 500 construction projects and generating revenue
           exceeding $2 million. To meet this demand, employee headcount was
           doubled, now totaling 10 temporary employees.
-          <p></p>
+
           Historically, LeavesFree Eaves tracked their projects on paper or
           spreadsheets. However, the recent influx of work has made this
           approach untenable. In the last season, 20 contracts were lost due to
@@ -29,7 +29,7 @@ const HomePage = () => {
           customers. There were also instances of fraud, with employees
           concealing and manipulating project records to perform the work
           independently for personal gain.
-          <p></p>
+          
           A Resource Management System will effectively resolve these issues by
           tracking the status of Work Orders, and the Employees, Purchase
           Orders, and Materials allocated to them. It will be capable of
