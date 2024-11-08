@@ -24,6 +24,7 @@ public class PurchaseOrderRepository {
             rowObject.setCreated_at(rs.getString("created_at"));
             rowObject.setEmployee_id(rs.getInt("employee_id"));
             rowObject.setWork_order_id(rs.getInt("work_order_id"));
+            if (rs.wasNull()) rowObject.setWork_order_id(null);
             return rowObject;
         });
     }
