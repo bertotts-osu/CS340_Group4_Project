@@ -23,6 +23,7 @@ public class WorkOrderRepository {
             rowObject.setSize(rs.getString("size"));
             rowObject.setStreet(rs.getString("street"));
             rowObject.setCity(rs.getString("city"));
+            rowObject.setState(rs.getString("state"));
             rowObject.setZip(rs.getString("zip"));
             rowObject.setStage(rs.getString("stage"));
             rowObject.setApplied_at(rs.getString("applied_at"));
