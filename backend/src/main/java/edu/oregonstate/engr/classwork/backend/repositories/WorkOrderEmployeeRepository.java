@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,7 +23,7 @@ public class WorkOrderEmployeeRepository {
             WorkOrderEmployee rowObject = new WorkOrderEmployee();
             rowObject.setEmployee_id(rs.getInt("employee_id"));
             rowObject.setWork_order_id(rs.getInt("work_order_id"));
-            rowObject.setAssigned_at(rs.getString("assigned_at"));
+            rowObject.setAssigned_at(rs.getObject("assigned_at", LocalDateTime.class));
             return rowObject;
         });
     }

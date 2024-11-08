@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -21,7 +22,7 @@ public class PurchaseOrderRepository {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             PurchaseOrder rowObject = new PurchaseOrder();
             rowObject.setPurchase_order_id(rs.getInt("purchase_order_id"));
-            rowObject.setCreated_at(rs.getString("created_at"));
+            rowObject.setCreated_at(rs.getObject("created_at", LocalDateTime.class));
             rowObject.setEmployee_id(rs.getInt("employee_id"));
             rowObject.setWork_order_id(rs.getInt("work_order_id"));
             if (rs.wasNull()) rowObject.setWork_order_id(null);
