@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import HeaderLabel from "../../components/HeaderLabel.jsx";
 import DisplayTable from "../../components/DisplayTable/DisplayTable.jsx";
-import { getWorkOrderData, getStageOptions } from "./WorkOrdersAPI.js";
+import {
+  getWorkOrderData,
+  getStageOptions,
+  submitWOForm,
+} from "./WorkOrdersAPI.js";
 import TableButtons from "../../components/TableButtons/TableButtons.jsx";
 import InputForm from "../../components/InputForm/InputForm.jsx";
 import { workOrderInsertSchema } from "../../components/InputForm/InputFormSchemas.js";
@@ -35,7 +39,7 @@ const WorkOrdersPage = () => {
   useEffect(() => {
     if (dataWO) {
       console.log("Fetched work order data from backend:", dataWO);
-      if (typeof dataWO === 'string') {
+      if (typeof dataWO === "string") {
         console.error("Received HTML instead of JSON:", dataWO);
       } else {
         setTblData(Array.isArray(dataWO) ? dataWO : []);
@@ -150,9 +154,24 @@ const WorkOrdersPage = () => {
     setIsCreating(true);
   };
 
+  const { mutate: submitData } = useMutation(submitWOForm, {
+    onSuccess: (data) => {
+      console.log("Success:", data);
+    },
+    onError: (error) => {
+      console.log("Error:", error);
+    },
+  });
+
+  const handleSubmit = (formData) => {
+    submitData(formData);
+  };
+
   if (isdataWOLoading || isStageOptionsLoading) return <div>Loading...</div>;
-  if (isdataWOError) return <div>Error fetching work order data: {dataWOError.message}</div>;
-  if (isStageOptionsError) return <div>Error fetching stage options: {stageOptionsError.message}</div>;
+  if (isdataWOError)
+    return <div>Error fetching work order data: {dataWOError.message}</div>;
+  if (isStageOptionsError)
+    return <div>Error fetching stage options: {stageOptionsError.message}</div>;
 
   return (
     <>
@@ -178,7 +197,11 @@ const WorkOrdersPage = () => {
           />
         </>
       ) : (
-        <InputForm schema={schema} onCancel={handleCancel} />
+        <InputForm
+          schema={schema}
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+        />
       )}
     </>
   );
