@@ -64,4 +64,15 @@ public class WorkOrderEmployeeRepository {
                 .param("employee_id", workOrderEmployee.getEmployee_id())
                 .update();
     }
+
+    public void delete(int work_order_id, int employee_id) {
+        String sql = """
+                DELETE FROM WorkOrderEmployees
+                WHERE work_order_id = :work_order_id AND employee_id = :employee_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("work_order_id", work_order_id)
+                .param("employee_id", employee_id)
+                .update();
+    }
 }

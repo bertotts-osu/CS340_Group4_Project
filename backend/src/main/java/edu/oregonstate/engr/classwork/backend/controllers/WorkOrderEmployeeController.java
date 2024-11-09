@@ -40,4 +40,10 @@ public class WorkOrderEmployeeController {
         WorkOrderEmployee updatedWorkOrderEmployee = workOrderEmployeeService.updateWorkOrderEmployee(workOrderEmployee);
         return ResponseEntity.ok(updatedWorkOrderEmployee);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteWorkOrderEmployee(@RequestParam int work_order_id, @RequestParam int employee_id) {
+        workOrderEmployeeService.deleteWorkOrderEmployee(work_order_id, employee_id);
+        return ResponseEntity.noContent().build();
+    }
 }

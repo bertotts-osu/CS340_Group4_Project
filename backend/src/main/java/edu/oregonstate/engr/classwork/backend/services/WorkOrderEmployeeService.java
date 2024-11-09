@@ -30,4 +30,8 @@ public class WorkOrderEmployeeService {
         workOrderEmployeeRepository.update(workOrderEmployee);
         return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
+
+    public void deleteWorkOrderEmployee(int work_order_id, int employee_id) {
+        workOrderEmployeeRepository.delete(work_order_id, employee_id);
+    }
 }
