@@ -5,15 +5,13 @@ import edu.oregonstate.engr.classwork.backend.services.WorkOrderEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/work-order-employees")
+@CrossOrigin(origins = "*") // enables requests to be sent from any origin
 public class WorkOrderEmployeeController {
 
     private final WorkOrderEmployeeService workOrderEmployeeService;
@@ -24,11 +22,28 @@ public class WorkOrderEmployeeController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "*") // enables requests to be sent from any origin
     public ResponseEntity<List<WorkOrderEmployee>> getAllWorkOrderEmployees() {
         List<WorkOrderEmployee> employees = workOrderEmployeeService.getAllWorkOrderEmployees();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(employees);
+    }
+
+    @PostMapping
+    public ResponseEntity<WorkOrderEmployee> createWorkOrderEmployee(@RequestBody WorkOrderEmployee workOrderEmployee) {
+        WorkOrderEmployee createdWorkOrderEmployee = workOrderEmployeeService.createWorkOrderEmployee(workOrderEmployee);
+        return ResponseEntity.ok(createdWorkOrderEmployee);
+    }
+
+    @PutMapping
+    public ResponseEntity<WorkOrderEmployee> updateWorkOrderEmployee(@RequestBody WorkOrderEmployee workOrderEmployee) {
+        WorkOrderEmployee updatedWorkOrderEmployee = workOrderEmployeeService.updateWorkOrderEmployee(workOrderEmployee);
+        return ResponseEntity.ok(updatedWorkOrderEmployee);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteWorkOrderEmployee(@RequestParam int work_order_id, @RequestParam int employee_id) {
+        workOrderEmployeeService.deleteWorkOrderEmployee(work_order_id, employee_id);
+        return ResponseEntity.noContent().build();
     }
 }

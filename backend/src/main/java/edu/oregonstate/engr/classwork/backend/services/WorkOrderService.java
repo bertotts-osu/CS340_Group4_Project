@@ -18,4 +18,9 @@ public class WorkOrderService {
     public List<WorkOrder> getAllWorkOrders() {
         return workOrderRepository.getAll();
     }
+
+    public WorkOrder createWorkOrder(WorkOrder workOrder) {
+        int work_order_id = workOrderRepository.insert(workOrder);
+        return workOrderRepository.getById(work_order_id);
+    }
 }
