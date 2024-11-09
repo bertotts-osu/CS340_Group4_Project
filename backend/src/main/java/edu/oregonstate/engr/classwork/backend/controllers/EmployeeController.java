@@ -1,20 +1,17 @@
 package edu.oregonstate.engr.classwork.backend.controllers;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import edu.oregonstate.engr.classwork.backend.models.Employee;
 import edu.oregonstate.engr.classwork.backend.services.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/employees")
+@CrossOrigin(origins = "*") // enables requests to be sent from any origin
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -25,11 +22,16 @@ public class EmployeeController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "*") // enables requests to be sent from any origin
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(employees);
+    }
+
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        Employee createdEmployee = employeeService.createEmployee(employee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
     }
 }

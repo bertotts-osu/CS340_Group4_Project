@@ -22,22 +22,22 @@ public class WorkOrderRepository {
         this.jdbcClient = JdbcClient.create(dataSource);
 
         this.rowMapper = (rs, rowNum) -> {
-            WorkOrder rowObject = new WorkOrder();
-            rowObject.setWork_order_id(rs.getInt("work_order_id"));
-            rowObject.setSize(WorkOrder.Size.valueOf(rs.getString("size")));
-            rowObject.setStreet(rs.getString("street"));
-            rowObject.setCity(rs.getString("city"));
-            rowObject.setState(rs.getString("state"));
-            rowObject.setZip(rs.getString("zip"));
-            rowObject.setStage(WorkOrder.Stage.valueOf(rs.getString("stage").replace(" ", "_")));
-            rowObject.setApplied_at(rs.getObject("applied_at", LocalDateTime.class));
-            rowObject.setEstimated_at(rs.getObject("estimated_at", LocalDateTime.class));
-            rowObject.setScheduled_at(rs.getObject("scheduled_at", LocalDateTime.class));
-            rowObject.setStarted_at(rs.getObject("started_at", LocalDateTime.class));
-            rowObject.setCompleted_at(rs.getObject("completed_at", LocalDateTime.class));
-            rowObject.setOn_hold_at(rs.getObject("on_hold_at", LocalDateTime.class));
-            rowObject.setCanceled_at(rs.getObject("canceled_at", LocalDateTime.class));
-            return rowObject;
+            WorkOrder workOrder = new WorkOrder();
+            workOrder.setWork_order_id(rs.getInt("work_order_id"));
+            workOrder.setSize(WorkOrder.Size.valueOf(rs.getString("size")));
+            workOrder.setStreet(rs.getString("street"));
+            workOrder.setCity(rs.getString("city"));
+            workOrder.setState(rs.getString("state"));
+            workOrder.setZip(rs.getString("zip"));
+            workOrder.setStage(WorkOrder.Stage.valueOf(rs.getString("stage").replace(" ", "_")));
+            workOrder.setApplied_at(rs.getObject("applied_at", LocalDateTime.class));
+            workOrder.setEstimated_at(rs.getObject("estimated_at", LocalDateTime.class));
+            workOrder.setScheduled_at(rs.getObject("scheduled_at", LocalDateTime.class));
+            workOrder.setStarted_at(rs.getObject("started_at", LocalDateTime.class));
+            workOrder.setCompleted_at(rs.getObject("completed_at", LocalDateTime.class));
+            workOrder.setOn_hold_at(rs.getObject("on_hold_at", LocalDateTime.class));
+            workOrder.setCanceled_at(rs.getObject("canceled_at", LocalDateTime.class));
+            return workOrder;
         };
 
         this.statementMapper = (statementSpec, workOrder) -> {
