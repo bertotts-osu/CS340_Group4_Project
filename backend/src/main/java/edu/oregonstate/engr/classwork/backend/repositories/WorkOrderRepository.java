@@ -10,13 +10,11 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.BiFunction;
 
 @Repository
 public class WorkOrderRepository {
     private final JdbcClient jdbcClient;
     private final RowMapper<WorkOrder> rowMapper;
-    private final BiFunction<JdbcClient.StatementSpec, WorkOrder, JdbcClient.StatementSpec> statementMapper;
 
     public WorkOrderRepository(DataSource dataSource) {
         this.jdbcClient = JdbcClient.create(dataSource);
@@ -39,42 +37,39 @@ public class WorkOrderRepository {
             workOrder.setCanceled_at(rs.getObject("canceled_at", LocalDateTime.class));
             return workOrder;
         };
-
-        this.statementMapper = (statementSpec, workOrder) -> {
-            return statementSpec
-                    .param("size", workOrder.getSize().toString())
-                    .param("street", workOrder.getStreet())
-                    .param("city", workOrder.getCity())
-                    .param("state", workOrder.getState())
-                    .param("zip", workOrder.getZip())
-                    .param("stage", workOrder.getStage().toString().replace("_", " "))
-                    .param("applied_at", workOrder.getApplied_at(), Types.TIMESTAMP)
-                    .param("estimated_at", workOrder.getEstimated_at(), Types.TIMESTAMP)
-                    .param("scheduled_at", workOrder.getScheduled_at(), Types.TIMESTAMP)
-                    .param("started_at", workOrder.getStarted_at(), Types.TIMESTAMP)
-                    .param("completed_at", workOrder.getCompleted_at(), Types.TIMESTAMP)
-                    .param("on_hold_at", workOrder.getOn_hold_at(), Types.TIMESTAMP)
-                    .param("canceled_at", workOrder.getCanceled_at(), Types.TIMESTAMP);
-        };
     }
 
     public List<WorkOrder> getAll() {
-        String sql = "SELECT * FROM WorkOrders";
+        String sql = "SELECT * FROM WorkOrders;";
         return jdbcClient.sql(sql).query(rowMapper).list();
     }
 
     public WorkOrder getById(int work_order_id) {
-        String sql = "SELECT * FROM WorkOrders WHERE work_order_id = :work_order_id";
+        String sql = "SELECT * FROM WorkOrders WHERE work_order_id = :work_order_id;";
         return jdbcClient.sql(sql).param("work_order_id", work_order_id).query(rowMapper).single();
     }
 
     public int insert(WorkOrder workOrder) {
         String sql = """
                 INSERT INTO WorkOrders (size, street, city, state, zip, stage, applied_at, estimated_at, scheduled_at, started_at, completed_at, on_hold_at, canceled_at)
-                VALUES (:size, :street, :city, :state, :zip, :stage, :applied_at, :estimated_at, :scheduled_at, :started_at, :completed_at, :on_hold_at, :canceled_at)
+                VALUES (:size, :street, :city, :state, :zip, :stage, :applied_at, :estimated_at, :scheduled_at, :started_at, :completed_at, :on_hold_at, :canceled_at);
                 """;
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        statementMapper.apply(jdbcClient.sql(sql), workOrder).update(keyHolder);
+        jdbcClient.sql(sql)
+                .param("size", workOrder.getSize().toString())
+                .param("street", workOrder.getStreet())
+                .param("city", workOrder.getCity())
+                .param("state", workOrder.getState())
+                .param("zip", workOrder.getZip())
+                .param("stage", workOrder.getStage().toString().replace("_", " "))
+                .param("applied_at", workOrder.getApplied_at(), Types.TIMESTAMP)
+                .param("estimated_at", workOrder.getEstimated_at(), Types.TIMESTAMP)
+                .param("scheduled_at", workOrder.getScheduled_at(), Types.TIMESTAMP)
+                .param("started_at", workOrder.getStarted_at(), Types.TIMESTAMP)
+                .param("completed_at", workOrder.getCompleted_at(), Types.TIMESTAMP)
+                .param("on_hold_at", workOrder.getOn_hold_at(), Types.TIMESTAMP)
+                .param("canceled_at", workOrder.getCanceled_at(), Types.TIMESTAMP)
+                .update(keyHolder);
         return keyHolder.getKey().intValue();
     }
 }

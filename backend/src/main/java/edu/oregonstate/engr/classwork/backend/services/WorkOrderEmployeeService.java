@@ -1,5 +1,6 @@
 package edu.oregonstate.engr.classwork.backend.services;
 
+import edu.oregonstate.engr.classwork.backend.models.WorkOrder;
 import edu.oregonstate.engr.classwork.backend.models.WorkOrderEmployee;
 import edu.oregonstate.engr.classwork.backend.repositories.WorkOrderEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,10 @@ public class WorkOrderEmployeeService {
 
     public List<WorkOrderEmployee> getAllWorkOrderEmployees() {
         return workOrderEmployeeRepository.getAll();
+    }
+
+    public WorkOrderEmployee createWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
+        workOrderEmployeeRepository.insert(workOrderEmployee);
+        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 }
