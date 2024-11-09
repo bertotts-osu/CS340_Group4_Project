@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import styles from "./InputForm.module.css";
 
-export default function InputForm({ schema, onCancel }) {
+export default function InputForm({ schema, onCancel, onSubmit }) {
   const [formData, setFormData] = useState({});
 
   const handleChange = (e) => {
@@ -12,14 +12,15 @@ export default function InputForm({ schema, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    onSubmit(formData);
     console.log("Form submitted:", formData);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
       {schema.fields.map((field, index) => (
         <div key={index} className={styles.formGroup}>
-          <label htmlFor={field.label}>{field.label}</label>
+          <label htmlFor={field.label} className={styles.label}>{field.label}</label>
           {field.type === "text" && (
             <input
               type="text"
@@ -28,6 +29,18 @@ export default function InputForm({ schema, onCancel }) {
               value={formData[field.label] || ""}
               onChange={handleChange}
               placeholder={field.label}
+              className={styles.input}
+            />
+          )}
+          {field.type === "datetime-local" && (
+              <input
+              type="datetime-local"
+              id={field.label}
+              name={field.label}
+              value={formData[field.label] || ""}
+              onChange={handleChange}
+              placeholder={field.label}
+              className={styles.input}
             />
           )}
           {field.type === "dropdown" && (
@@ -36,6 +49,7 @@ export default function InputForm({ schema, onCancel }) {
               name={field.label}
               value={formData[field.label] || ""}
               onChange={handleChange}
+              className={styles.input}
             >
               <option value="" disabled>
                 Select {field.label}
@@ -53,13 +67,16 @@ export default function InputForm({ schema, onCancel }) {
         <button type="button" className={styles.button} onClick={onCancel}>
           Cancel
         </button>
-        <button type="submit" className={styles.button}>Submit</button>
+        <button type="submit" className={styles.button}>
+          Submit
+        </button>
       </div>
     </form>
   );
-}
+};
 
 InputForm.propTypes = {
   schema: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

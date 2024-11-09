@@ -1,6 +1,14 @@
 export const workOrderInsertSchema = {
   fields: [
-    { label: "Size", type: "text" },
+    { 
+      label: "Size",
+      type: "dropdown",
+      options: [
+        "Small",
+        "Medium",
+        "Large"
+      ],
+    },
     { label: "Street", type: "text" },
     { label: "City", type: "text" },
     { label: "Zip", type: "text" },
@@ -9,6 +17,13 @@ export const workOrderInsertSchema = {
       type: "dropdown",
       fetchOptions: true, //options to be fetched from API
     },
+    { label: "Applied At", type: "datetime-local" },
+    { label: "Estimated At", type: "datetime-local" },
+    { label: "Scheduled At", type: "datetime-local" },
+    { label: "Started At", type: "datetime-local" },
+    { label: "Completed At", type: "datetime-local" },
+    { label: "On Hold At", type: "datetime-local" },
+    { label: "Cancelled At", type: "datetime-local" },
   ],
 };
 
