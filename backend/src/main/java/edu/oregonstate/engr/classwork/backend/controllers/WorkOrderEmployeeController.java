@@ -34,4 +34,10 @@ public class WorkOrderEmployeeController {
         WorkOrderEmployee createdWorkOrderEmployee = workOrderEmployeeService.createWorkOrderEmployee(workOrderEmployee);
         return ResponseEntity.ok(createdWorkOrderEmployee);
     }
+
+    @PutMapping
+    public ResponseEntity<WorkOrderEmployee> updateWorkOrderEmployee(@RequestBody WorkOrderEmployee workOrderEmployee) {
+        WorkOrderEmployee updatedWorkOrderEmployee = workOrderEmployeeService.updateWorkOrderEmployee(workOrderEmployee);
+        return ResponseEntity.ok(updatedWorkOrderEmployee);
+    }
 }

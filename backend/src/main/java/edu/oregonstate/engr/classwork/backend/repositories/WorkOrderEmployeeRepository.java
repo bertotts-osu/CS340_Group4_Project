@@ -51,4 +51,17 @@ public class WorkOrderEmployeeRepository {
                 .param("assigned_at", workOrderEmployee.getAssigned_at(), Types.TIMESTAMP)
                 .update();
     }
+
+    public void update(WorkOrderEmployee workOrderEmployee) {
+        String sql = """
+                UPDATE WorkOrderEmployees
+                SET assigned_at = :assigned_at
+                WHERE work_order_id = :work_order_id AND employee_id = :employee_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("assigned_at", workOrderEmployee.getAssigned_at(), Types.TIMESTAMP)
+                .param("work_order_id", workOrderEmployee.getWork_order_id())
+                .param("employee_id", workOrderEmployee.getEmployee_id())
+                .update();
+    }
 }

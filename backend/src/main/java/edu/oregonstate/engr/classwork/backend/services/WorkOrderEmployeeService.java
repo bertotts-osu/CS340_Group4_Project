@@ -25,4 +25,9 @@ public class WorkOrderEmployeeService {
         workOrderEmployeeRepository.insert(workOrderEmployee);
         return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
+
+    public WorkOrderEmployee updateWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
+        workOrderEmployeeRepository.update(workOrderEmployee);
+        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
+    }
 }
