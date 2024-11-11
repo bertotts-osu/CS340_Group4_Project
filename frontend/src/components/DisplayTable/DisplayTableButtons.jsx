@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import styles from "./TableButtons.module.css";
+import styles from "./DisplayTableContainer.module.css";
 
 export default function TableButtons({ onDelete, onEdit, onSave, onCancel, onAdd, isEditing }) {
   if (isEditing) {

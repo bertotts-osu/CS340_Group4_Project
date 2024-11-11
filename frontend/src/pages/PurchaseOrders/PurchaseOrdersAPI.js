@@ -1,14 +1,64 @@
-export async function getPurchaseOrderData() {
-    const response = await fetch(import.meta.env.VITE_API_URL + "/purchase-orders");
-    console.log("Response status:", response.status);
-    if (!response.ok) {       // ok is a boolean method of the Response object
-      const error = new Error("An error occured while fetching the MySQLResult");
-      error.code = response.status; //tacks the HTTP status code to the error
-      error.info = await response.json(); //converts the response body to JSON in order to include more details about the error provided by the server
-      console.log(error);
-      throw error;
+import axios from "axios";
+
+export async function getPurchaseOrders() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/purchase-orders`,
+    {
+      headers: { "Content-Type": "application/json" },
     }
-    
-    const result = await response.json();
-    return result;
-  }
+  );
+  return response.data;
+}
+
+export async function createPurchaseOrder(formData) {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/purchase-orders`,
+    formData,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function updatePurchaseOrders(changes) {
+  const response = await axios.put(
+    `${import.meta.env.VITE_API_URL}/purchase-orders`,
+    changes,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function deletePurchaseOrders(entries) {
+  const response = await axios.delete(
+    `${import.meta.env.VITE_API_URL}/purchase-orders`,
+    {
+      headers: { "Content-Type": "application/json" },
+      data: entries,
+    }
+  );
+  return response.data;
+}
+
+export async function getEmployeeNameOptions() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/employee-names`,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function getWorkOrderOptions() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/work-order-list`,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}

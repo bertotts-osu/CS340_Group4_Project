@@ -1,14 +1,45 @@
-export async function getPurchaseOrderItemData() {
-    const response = await fetch(import.meta.env.VITE_API_URL + "/purchase-order-items");
-    console.log("Response status:", response.status);
-    if (!response.ok) {       // ok is a boolean method of the Response object
-      const error = new Error("An error occured while fetching the MySQLResult");
-      error.code = response.status; //tacks the HTTP status code to the error
-      error.info = await response.json(); //converts the response body to JSON in order to include more details about the error provided by the server
-      console.log(error);
-      throw error;
+import axios from "axios";
+
+export async function getPurchaseOrderItems() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
+    {
+      headers: { "Content-Type": "application/json" },
     }
-    
-    const result = await response.json();
-    return result;
-  }
+  );
+  return response.data;
+}
+
+export async function createPurchaseOrderItem(formData) {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
+    formData,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function updatePurchaseOrderItems(changes) {
+
+  const response = await axios.put(
+    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
+    changes,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function deletePurchaseOrderItems(entries) {
+  const response = await axios.delete(
+    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
+    {
+      headers: { "Content-Type": "application/json" },
+      data: entries,
+    }
+  );
+  return response.data;
+}

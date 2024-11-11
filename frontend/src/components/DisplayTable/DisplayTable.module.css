@@ -1,35 +1,68 @@
 .tableContainer {
-    max-width: 100%;
-    margin: 20px auto;
-    overflow-x: auto;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    text-align: center;
-  }
-  
-  .table th,
-  .table td {
-    border: 1px solid black;
-    padding: 6px 8px;
-    white-space: nowrap;
-  }
-  
-  .table thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-  }
-  
-  .table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-  }
-  
-  .table tbody tr.active-row {
-    font-weight: bold;
-    color: #017961;
-  }
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+  max-height: 600px;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid black;
+}
+
+.table {
+  min-width: none;
+  border-collapse: collapse;
+  border: none;
+  font-size: 14px;
+  text-align: center;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  padding: 6px 8px;
+  border: none;
+  border-right: 1px solid black;
+  background-color: #009879;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+}
+
+.table th:last-child {
+  border-right: none;
+}
+
+.table td {
+  border: 1px solid black;
+  padding: 6px 8px;
+  white-space: nowrap;
+  border-collapse: collapse;
+  border-left: none;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table td:last-child {
+  border-right: none;
+}
+
+.table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.table tbody tr.active-row {
+  font-weight: bold;
+  color: #017961;
+  background-color: #4196ad29;
+}
+
+.input {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  font-size: 14px;
+}

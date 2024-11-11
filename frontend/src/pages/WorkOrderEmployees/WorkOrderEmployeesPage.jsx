@@ -1,152 +1,103 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import HeaderLabel from "../../components/HeaderLabel.jsx";
-import DisplayTable from "../../components/DisplayTable/DisplayTable.jsx";
-import { getWorkOrderEmployeeData } from "./WorkOrderEmployeesAPI.js";
-import TableButtons from "../../components/TableButtons/TableButtons.jsx";
-import InputForm from "../../components/InputForm/InputForm.jsx";
+import {
+  getWorkOrderEmployees,
+  getEmployeeNameOptions,
+  getWorkOrderOptions,
+  createWorkOrderEmployee,
+  updateWorkOrderEmployees,
+  deleteWorkOrderEmployees,
+} from "./WorkOrderEmployeesAPI.js";
+import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
+import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
+
+// Input form schema
+const createSchemaTemplate = {
+  fields: [
+    {
+      label: "Work Order",
+      type: "dropdown",
+      fetchOptions: true, //options to be fetched from API
+    },
+    {
+      label: "Employee Name",
+      type: "dropdown",
+      fetchOptions: true, //options to be fetched from API
+    },
+    { label: "Assigned At", type: "datetime-local" },
+  ],
+};
+
+// Schema that maps which input fields should be used for particular columns when editing
+const editSchemaTemplate = [
+  {
+    key: "Work Order",
+    type: "uneditable",
+  },
+  {
+    key: "Employee Name",
+    type: "uneditable",
+  },
+];
 
 const WorkOrderEmployeesPage = () => {
+  const [createSchema, setCreateSchema] = useState(createSchemaTemplate);
+  const [editSchema, setEditSchema] = useState(editSchemaTemplate);
+
+  // Set tab name
   useEffect(() => {
-    document.title = "LeavesFree Eaves - Work Orders";
+    document.title = "LeavesFree Eaves - Work Order Employees";
   }, []);
 
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["WorkOrderEmployees"],
-    queryFn: getWorkOrderEmployeeData,
+  // Fetch Dropdown options
+  const { data: employeeNameOptions } = useQuery({
+    queryKey: ["employeeNameOptions"],
+    queryFn: getEmployeeNameOptions,
   });
 
-  const [tblData, setTblData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [editableRows, setEditableRows] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValues, setEditValues] = useState({});
-  const [isCreating, setIsCreating] = useState(false);
+  const { data: workOrderOptions } = useQuery({
+    queryKey: ["workOrderOptions"],
+    queryFn: getWorkOrderOptions,
+  });
 
+  // Update the table data schemas
   useEffect(() => {
-    if (data) {
-      setTblData(data);
-    }
-  }, [data]);
-
-  let labelText;
-
-  if (isPending) {
-    labelText = "Getting table data...";
-  } else if (isError) {
-    labelText = `An error occurred: ${
-      error.info?.message || "Unable to connect to db."
-    }`;
-    console.log(error);
-  } else if (data) {
-    labelText = "Work Order Employees";
-  }
-
-  const handleCheckboxChange = ([id1, id2, isComposite]) => {
-    const id = isComposite ? `${id1}-${id2}` : id1;
-    setSelectedRows((prevSelectedRows) =>
-      prevSelectedRows.includes(id)
-        ? prevSelectedRows.filter((rowId) => rowId !== id)
-        : [...prevSelectedRows, id]
-    );
-  };
-
-  const handleDelete = () => {
-    console.log("Selected rows before deletion:", selectedRows);
-    console.log("Table data before deletion:", tblData);
-
-    setTblData((prevTblData) =>
-      prevTblData.filter((row) => {
-        const id = row.work_order_id;
-        return !selectedRows.includes(id);
-      })
-    );
-
-    console.log("Table data after deletion:", tblData);
-    setSelectedRows([]);
-  };
-
-  const handleUpdate = (updatedValues) => {
-    setTblData((prevTblData) =>
-      prevTblData.map((row) =>
-        editableRows.includes(row.work_order_id)
-          ? { ...row, ...updatedValues[row.work_order_id] }
-          : row
-      )
-    );
-    setEditableRows([]);
-    setIsEditing(false);
-  };
-
-  const handleEdit = () => {
-    if (selectedRows.length > 0) {
-      setEditableRows(selectedRows);
-      setIsEditing(true);
-      const rowsToEdit = tblData.filter((row) =>
-        selectedRows.includes(row.work_order_id)
+    if (employeeNameOptions && workOrderOptions) {
+      setCreateSchema({
+        ...createSchemaTemplate,
+        fields: createSchemaTemplate.fields.map((field) => {
+          if (field.fetchOptions && field.label === "Employee Name") {
+            return { ...field, options: employeeNameOptions };
+          } else if (field.fetchOptions && field.label === "Work Order") {
+            return { ...field, options: workOrderOptions };
+          }
+          return field;
+        }),
+      });
+      setEditSchema(
+        editSchemaTemplate.map((field) => {
+          if (field.fetchOptions && field.label === "Employee Name") {
+            return { ...field, options: employeeNameOptions };
+          } else if (field.fetchOptions && field.label === "Work Order") {
+            return { ...field, options: workOrderOptions };
+          }
+          return field;
+        })
       );
-      const newEditValues = rowsToEdit.reduce((acc, row) => {
-        acc[row.work_order_id] = row;
-        return acc;
-      }, {});
-      setEditValues(newEditValues);
-    } else {
-      console.log("Please select at least one row to edit.");
     }
-  };
-
-  const handleSave = () => {
-    if (editableRows.length > 0) {
-      handleUpdate(editValues);
-      setEditValues({});
-      setSelectedRows([]);
-      setIsEditing(false);
-    }
-  };
-
-  const handleCancel = () => { 
-    setEditableRows([]);
-    setEditValues({});
-    setSelectedRows([]);
-    setIsEditing(false);
-    setIsCreating(false);
-  };
-
-  const handleAdd = () => {
-    setIsCreating(true);
-  }
+  }, [employeeNameOptions, workOrderOptions]);
 
   return (
-    <>
-      <HeaderLabel text={labelText} />
-      {!isCreating ?
-      (
-        <>
-      <DisplayTable
-        data={tblData}
-        onCheckboxChange={handleCheckboxChange}
-        editableRows={editableRows}
-        onUpdate={handleUpdate}
-        setEditValues={setEditValues}
-        editValues={editValues}
-        selectedRows={selectedRows}
-      />
-      <TableButtons
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onAdd={handleAdd}
-        isEditing={isEditing}
-      />
-      </>
-      ) : (
-        <InputForm 
-        table={labelText}
-        onCancel={handleCancel}
-        />
-      )}
-    </>
+    <DisplayTableContainer
+      className={style.container}
+      headerText={"Work Order Employees"}
+      createSchema={createSchema}
+      editSchema={editSchema}
+      fetchAPI={getWorkOrderEmployees}
+      createAPI={createWorkOrderEmployee}
+      updateAPI={updateWorkOrderEmployees}
+      deleteAPI={deleteWorkOrderEmployees}
+    />
   );
 };
 export default WorkOrderEmployeesPage;

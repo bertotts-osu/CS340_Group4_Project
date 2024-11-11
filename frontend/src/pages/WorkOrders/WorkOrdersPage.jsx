@@ -1,152 +1,108 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import HeaderLabel from "../../components/HeaderLabel.jsx";
-import DisplayTable from "../../components/DisplayTable/DisplayTable.jsx";
-import { getWorkOrderData } from "./WorkOrdersAPI.js";
-import TableButtons from "../../components/TableButtons/TableButtons.jsx";
-import InputForm from "../../components/InputForm/InputForm.jsx";
+import {
+  getWorkOrders,
+  getStageOptions,
+  createWorkOrder,
+  updateWorkOrders,
+  deleteWorkOrders,
+} from "./WorkOrdersAPI.js";
+import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
+import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
+
+// Input form schema
+const createSchemaTemplate = {
+  fields: [
+    { 
+      label: "Size",
+      type: "dropdown",
+      options: [
+        "Small",
+        "Medium",
+        "Large"
+      ],
+    },
+    { label: "Street", type: "text" },
+    { label: "City", type: "text" },
+    { label: "State", type: "text" },
+    { label: "Zip", type: "text" },
+    {
+      label: "Stage",
+      type: "dropdown",
+      fetchOptions: true, //options to be fetched from API
+    },
+    { label: "Applied At", type: "datetime-local" },
+    { label: "Estimated At", type: "datetime-local" },
+    { label: "Scheduled At", type: "datetime-local" },
+    { label: "Started At", type: "datetime-local" },
+    { label: "Completed At", type: "datetime-local" },
+    { label: "On Hold At", type: "datetime-local" },
+    { label: "Cancelled At", type: "datetime-local" },
+  ],
+};
+
+// Schema that maps which input fields should be used for particular columns when editing
+const editSchemaTemplate = [
+  {
+    key: "Work Order",
+    type: "uneditable",
+  },
+  {
+    label: "Stage",
+    type: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+  },
+];
 
 const WorkOrdersPage = () => {
+  const [createSchema, setCreateSchema] = useState(createSchemaTemplate);
+  const [editSchema, setEditSchema] = useState(editSchemaTemplate);
+
+  // Set tab name
   useEffect(() => {
     document.title = "LeavesFree Eaves - Work Orders";
   }, []);
 
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["workOrders"],
-    queryFn: getWorkOrderData,
+  // Fetch Dropdown options
+  const { data: stageOptions } = useQuery({
+    queryKey: ["stageOptions"],
+    queryFn: getStageOptions,
   });
 
-  const [tblData, setTblData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [editableRows, setEditableRows] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValues, setEditValues] = useState({});
-  const [isCreating, setIsCreating] = useState(false);
-
   useEffect(() => {
-    if (data) {
-      setTblData(data);
-    }
-  }, [data]);
-
-  let labelText;
-
-  if (isPending) {
-    labelText = "Getting table data...";
-  } else if (isError) {
-    labelText = `An error occurred: ${
-      error.info?.message || "Unable to connect to db."
-    }`;
-    console.log(error);
-  } else if (data) {
-    labelText = "Work Orders";
-  }
-
-  const handleCheckboxChange = ([id1, id2, isComposite]) => {
-    const id = isComposite ? `${id1}-${id2}` : id1;
-    setSelectedRows((prevSelectedRows) =>
-      prevSelectedRows.includes(id)
-        ? prevSelectedRows.filter((rowId) => rowId !== id)
-        : [...prevSelectedRows, id]
-    );
-  };
-
-  const handleDelete = () => {
-    console.log("Selected rows before deletion:", selectedRows);
-    console.log("Table data before deletion:", tblData);
-
-    setTblData((prevTblData) =>
-      prevTblData.filter((row) => {
-        const id = row.work_order_id;
-        return !selectedRows.includes(id);
-      })
-    );
-
-    console.log("Table data after deletion:", tblData);
-    setSelectedRows([]);
-  };
-
-  const handleUpdate = (updatedValues) => {
-    setTblData((prevTblData) =>
-      prevTblData.map((row) =>
-        editableRows.includes(row.work_order_id)
-          ? { ...row, ...updatedValues[row.work_order_id] }
-          : row
-      )
-    );
-    setEditableRows([]);
-    setIsEditing(false);
-  };
-
-  const handleEdit = () => {
-    if (selectedRows.length > 0) {
-      setEditableRows(selectedRows);
-      setIsEditing(true);
-      const rowsToEdit = tblData.filter((row) =>
-        selectedRows.includes(row.work_order_id)
+    if (stageOptions) {
+      setCreateSchema({
+        ...createSchemaTemplate,
+        fields: createSchemaTemplate.fields.map((field) => {
+          if (field.fetchOptions && field.label === "Stage") {
+            return { ...field, options: stageOptions };
+          }
+          return field;
+        }),
+      });
+      setEditSchema(
+        editSchemaTemplate.map((field) => {
+          if (field.fetchOptions && field.label === "Stage") {
+            return { ...field, options: stageOptions };
+          }
+          return field;
+        })
       );
-      const newEditValues = rowsToEdit.reduce((acc, row) => {
-        acc[row.work_order_id] = row;
-        return acc;
-      }, {});
-      setEditValues(newEditValues);
-    } else {
-      console.log("Please select at least one row to edit.");
     }
-  };
-
-  const handleSave = () => {
-    if (editableRows.length > 0) {
-      handleUpdate(editValues);
-      setEditValues({});
-      setSelectedRows([]);
-      setIsEditing(false);
-    }
-  };
-
-  const handleCancel = () => { 
-    setEditableRows([]);
-    setEditValues({});
-    setSelectedRows([]);
-    setIsEditing(false);
-    setIsCreating(false);
-  };
-
-  const handleAdd = () => {
-    setIsCreating(true);
-  }
+  }, [stageOptions]);
 
   return (
-    <>
-      <HeaderLabel text={labelText} />
-      {!isCreating ?
-      (
-        <>
-      <DisplayTable
-        data={tblData}
-        onCheckboxChange={handleCheckboxChange}
-        editableRows={editableRows}
-        onUpdate={handleUpdate}
-        setEditValues={setEditValues}
-        editValues={editValues}
-        selectedRows={selectedRows}
-      />
-      <TableButtons
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onAdd={handleAdd}
-        isEditing={isEditing}
-      />
-      </>
-      ) : (
-        <InputForm 
-        table={labelText}
-        onCancel={handleCancel}
-        />
-      )}
-    </>
+    <DisplayTableContainer
+      className={style.container}
+      headerText={"Work Orders"}
+      createSchema={createSchema}
+      editSchema={editSchema}
+      fetchAPI={getWorkOrders}
+      createAPI={createWorkOrder}
+      updateAPI={updateWorkOrders}
+      deleteAPI={deleteWorkOrders}
+    />
   );
 };
+
 export default WorkOrdersPage;

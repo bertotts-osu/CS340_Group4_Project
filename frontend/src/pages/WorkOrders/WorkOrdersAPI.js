@@ -1,14 +1,50 @@
-export async function getWorkOrderData() {
-    const response = await fetch(import.meta.env.VITE_API_URL + "/work-orders");
-    console.log("Response status:", response.status);
-    if (!response.ok) {       // ok is a boolean method of the Response object
-      const error = new Error("An error occured while fetching the MySQLResult");
-      error.code = response.status; //tacks the HTTP status code to the error
-      error.info = await response.json(); //converts the response body to JSON in order to include more details about the error provided by the server
-      console.log(error);
-      throw error;
+import axios from "axios";
+
+export async function getWorkOrders() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/work-orders`,
+    {
+      headers: { "Content-Type": "application/json" },
     }
-    
-    const result = await response.json();
-    return result;
-  }
+  );
+  return response.data;
+}
+
+export async function createWorkOrder(formData) {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/work-orders`,
+    formData,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function updateWorkOrders(changes) {
+
+  const response = await axios.put(
+    `${import.meta.env.VITE_API_URL}/work-orders`,
+    changes,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data;
+}
+
+export async function deleteWorkOrders(entries) {
+  const response = await axios.delete(
+    `${import.meta.env.VITE_API_URL}/work-orders`,
+    {
+      headers: { "Content-Type": "application/json" },
+      data: entries,
+    }
+  );
+  return response.data;
+}
+
+export async function getStageOptions() {
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}/stages`);
+  return response.data;
+}
