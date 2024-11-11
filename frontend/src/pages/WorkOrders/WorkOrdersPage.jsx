@@ -104,4 +104,5 @@ const WorkOrdersPage = () => {
     />
   );
 };
+
 export default WorkOrdersPage;
