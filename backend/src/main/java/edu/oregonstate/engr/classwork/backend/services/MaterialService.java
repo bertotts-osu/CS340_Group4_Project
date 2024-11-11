@@ -1,4 +1,5 @@
 package edu.oregonstate.engr.classwork.backend.services;
+
 import edu.oregonstate.engr.classwork.backend.models.Material;
 import edu.oregonstate.engr.classwork.backend.repositories.MaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,5 +18,10 @@ public class MaterialService {
 
     public List<Material> getAllMaterials() {
         return materialRepository.getAll();
+    }
+
+    public Material createMaterial(Material material) {
+        int material_id = materialRepository.insert(material);
+        return materialRepository.getById(material_id);
     }
 }
