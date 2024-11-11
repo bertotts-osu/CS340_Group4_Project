@@ -1,122 +1,119 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
 import styles from "./DisplayTable.module.css";
 
-export default function DisplayTable({
-  data,
-  onCheckboxChange,
-  editableRows,
-  setEditValues,
-  editValues,
-  selectedRows,
-}) {
-  const [headers, setHeaders] = useState(["Select"]);
-  const [idKeys, setIdKeys] = useState([]);
-
-  useEffect(() => {
-    if (
-      data &&
-      data.length > 0 &&
-      headers.length === 1 &&
-      headers[0] === "Select"
-    ) {
-      const newHeaders = ["Select", ...Object.keys(data[0])].map((header) => {
-        if (header.toLowerCase().includes("id")) {
-          setIdKeys((prevIdKeys) => [...prevIdKeys, header]);
-        }
-        return header
-          .split("_")
-          .map((word) => {
-            return word === "id"
-              ? word.charAt(0).toUpperCase() + word.charAt(1).toUpperCase()
-              : word.charAt(0).toUpperCase() + word.slice(1);
-          })
-          .join(" ");
-      });
-      setHeaders(newHeaders);
+export default function DisplayTable({ data, editSchema, headers, selectedRows, isEditing, onRowChange, onSelectRow }) {
+  const renderInput = (key, value, rowID) => {
+    const field = editSchema.find((field) => field.key === key);
+    if (field && field.type === "uneditable") {
+      return <span>{value}</span>;
+    } else if (field && field.type === "dropdown") {
+      return (
+        <select
+          id={field.key}
+          name={field.key}
+          value={value || ""}
+          onChange={(e) => onRowChange(rowID, { [field.key]: e.target.value })}
+          className={styles.input}
+        >
+          <option value="" disabled>
+            Select {field.key}
+          </option>
+          {field.options.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      );
+    } else if (key.includes("At")) {
+      return (
+        <input
+          type="datetime-local"
+          value={value}
+          onChange={(e) => onRowChange(rowID, { [key]: e.target.value })}
+          className={styles.input}
+        />
+      );
     }
-  }, [data, headers, idKeys]);
-
-  const getRowIdentifier = (item) => {
-    if (idKeys.length === 2) {
-      return [item[idKeys[0]], item[idKeys[1]], true];
-    } else if (idKeys.length === 1) {
-      return [item[idKeys[0]], null, false];
-    }
-    return [undefined, undefined, false];
+    return (
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onRowChange(rowID, { [key]: e.target.value })}
+        className={styles.input}
+      />
+    );
   };
 
-  const handleInputChange = (e, key, rowId) => {
-    setEditValues({
-      ...editValues,
-      [rowId]: {
-        ...editValues[rowId],
-        [key]: e.target.value,
-      },
-    });
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    };
+    return date.toLocaleString("en-US", options);
   };
 
-  return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            {headers.map((val, index) => (
-              <th key={index}>{val}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((item, index) => {
-              const [id1, id2, isComposite] = getRowIdentifier(item);
-              const id = isComposite ? `${id1}-${id2}` : id1;
-              const isSelected = selectedRows.includes(id);
-              return (
-                <tr key={id || index}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {
-                        if (id1 !== undefined) {
-                          onCheckboxChange([id1, id2, isComposite]);
-                        }
-                      }}
-                    />
-                  </td>
-                  {Object.keys(item).map((key, i) => (
-                    <td key={i}>
-                      {editableRows.includes(id) && !key.toLowerCase().includes("id") ? (
-                        <input
-                          type="text"
-                          value={editValues[id]?.[key] || item[key]}
-                          onChange={(e) => handleInputChange(e, key, id)}
-                        />
-                      ) : (
-                        item[key]
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })
-          ) : (
+  if (data && data.length > 0) {
+    return (
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
+          <thead>
             <tr>
-              <td colSpan={headers.length}>No data available</td>
+              {headers.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr
+                key={item.rowID}
+                className={
+                  selectedRows.includes(item.rowID) ? styles["active-row"] : ""
+                }
+              >
+                <td>{item.rowID}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={() => onSelectRow(item.rowID)}
+                    checked={selectedRows.includes(item.rowID)}
+                  />
+                </td>
+                {Object.keys(item).map(
+                  (key, index) =>
+                    key !== "rowID" && (
+                      <td key={index}>
+                        {isEditing && selectedRows.includes(item.rowID)
+                          ? renderInput(key, item[key], item.rowID)
+                          : key.includes("At")
+                          ? formatDateTime(item[key])
+                          : item[key]}
+                      </td>
+                    )
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  return <div>No data available</div>;
 }
 
 DisplayTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onCheckboxChange: PropTypes.func.isRequired,
-  editableRows: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
-  setEditValues: PropTypes.func.isRequired,
-  editValues: PropTypes.object.isRequired,
-  selectedRows: PropTypes.arrayOf(PropTypes.string).isRequired,
+  editSchema: PropTypes.arrayOf(PropTypes.object).isRequired,
+  headers: PropTypes.arrayOf(PropTypes.node).isRequired,
+  selectedRows: PropTypes.arrayOf(PropTypes.number).isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  onRowChange: PropTypes.func.isRequired,
+  onSelectRow: PropTypes.func.isRequired,
 };

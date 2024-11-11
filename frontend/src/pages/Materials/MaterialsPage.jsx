@@ -1,152 +1,56 @@
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import HeaderLabel from "../../components/HeaderLabel.jsx";
-import DisplayTable from "../../components/DisplayTable/DisplayTable.jsx";
-import { getMaterialData } from "./MaterialsAPI.js";
-import TableButtons from "../../components/TableButtons/TableButtons.jsx";
-import InputForm from "../../components/InputForm/InputForm.jsx";
+import { useEffect } from "react";
+import { 
+  getMaterials,
+  createMaterial,
+  updateMaterials,
+  deleteMaterials,
+} from "./MaterialsAPI.js";
+import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
+import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
+
+// Input form schema
+const createSchemaTemplate = {
+  fields: [
+    { label: "Name", type: "text" },
+    {
+      label: "Unit",
+      type: "dropdown",
+      options: ["FT", "EA"],
+    },
+    { label: "Quantity Available", type: "text" },
+  ],
+};
+
+// Schema that maps which input fields should be used for particular columns when editing
+const editSchemaTemplate = [
+  {
+    key: "Work Order",
+    type: "uneditable",
+  },
+  {
+    key: "Employee Name",
+    type: "uneditable",
+  },
+];
 
 const MaterialsPage = () => {
+
+  // Set tab name
   useEffect(() => {
     document.title = "LeavesFree Eaves - Materials";
   }, []);
 
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["Materials"],
-    queryFn: getMaterialData,
-  });
-
-  const [tblData, setTblData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [editableRows, setEditableRows] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValues, setEditValues] = useState({});
-  const [isCreating, setIsCreating] = useState(false);
-
-  useEffect(() => {
-    if (data) {
-      setTblData(data);
-    }
-  }, [data]);
-
-  let labelText;
-
-  if (isPending) {
-    labelText = "Getting table data...";
-  } else if (isError) {
-    labelText = `An error occurred: ${
-      error.info?.message || "Unable to connect to db."
-    }`;
-    console.log(error);
-  } else if (data) {
-    labelText = "Materials";
-  }
-
-  const handleCheckboxChange = ([id1, id2, isComposite]) => {
-    const id = isComposite ? `${id1}-${id2}` : id1;
-    setSelectedRows((prevSelectedRows) =>
-      prevSelectedRows.includes(id)
-        ? prevSelectedRows.filter((rowId) => rowId !== id)
-        : [...prevSelectedRows, id]
-    );
-  };
-
-  const handleDelete = () => {
-    console.log("Selected rows before deletion:", selectedRows);
-    console.log("Table data before deletion:", tblData);
-
-    setTblData((prevTblData) =>
-      prevTblData.filter((row) => {
-        const id = row.material_id;
-        return !selectedRows.includes(id);
-      })
-    );
-
-    console.log("Table data after deletion:", tblData);
-    setSelectedRows([]);
-  };
-
-  const handleUpdate = (updatedValues) => {
-    setTblData((prevTblData) =>
-      prevTblData.map((row) =>
-        editableRows.includes(row.material_id)
-          ? { ...row, ...updatedValues[row.material_id] }
-          : row
-      )
-    );
-    setEditableRows([]);
-    setIsEditing(false);
-  };
-
-  const handleEdit = () => {
-    if (selectedRows.length > 0) {
-      setEditableRows(selectedRows);
-      setIsEditing(true);
-      const rowsToEdit = tblData.filter((row) =>
-        selectedRows.includes(row.material_id)
-      );
-      const newEditValues = rowsToEdit.reduce((acc, row) => {
-        acc[row.material_id] = row;
-        return acc;
-      }, {});
-      setEditValues(newEditValues);
-    } else {
-      console.log("Please select at least one row to edit.");
-    }
-  };
-
-  const handleSave = () => {
-    if (editableRows.length > 0) {
-      handleUpdate(editValues);
-      setEditValues({});
-      setSelectedRows([]);
-      setIsEditing(false);
-    }
-  };
-
-  const handleCancel = () => { 
-    setEditableRows([]);
-    setEditValues({});
-    setSelectedRows([]);
-    setIsEditing(false);
-    setIsCreating(false);
-  };
-
-  const handleAdd = () => {
-    setIsCreating(true);
-  }
-
   return (
-    <>
-      <HeaderLabel text={labelText} />
-      {!isCreating ?
-      (
-        <>
-      <DisplayTable
-        data={tblData}
-        onCheckboxChange={handleCheckboxChange}
-        editableRows={editableRows}
-        onUpdate={handleUpdate}
-        setEditValues={setEditValues}
-        editValues={editValues}
-        selectedRows={selectedRows}
-      />
-      <TableButtons
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onAdd={handleAdd}
-        isEditing={isEditing}
-      />
-      </>
-      ) : (
-        <InputForm 
-        table={labelText}
-        onCancel={handleCancel}
-        />
-      )}
-    </>
+    <DisplayTableContainer
+      className={style.container}
+      headerText={"Materials"}
+      createSchema={createSchemaTemplate}
+      editSchema={editSchemaTemplate}
+      fetchAPI={getMaterials}
+      createAPI={createMaterial}
+      updateAPI={updateMaterials}
+      deleteAPI={deleteMaterials}
+    />
   );
 };
 export default MaterialsPage;

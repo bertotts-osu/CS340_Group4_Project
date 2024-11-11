@@ -1,4 +1,4 @@
-export const workOrderInsertSchema = {
+export const WorkOrderSchema = {
   fields: [
     { 
       label: "Size",
@@ -11,6 +11,7 @@ export const workOrderInsertSchema = {
     },
     { label: "Street", type: "text" },
     { label: "City", type: "text" },
+    { label: "State", type: "text" },
     { label: "Zip", type: "text" },
     {
       label: "Stage",
@@ -27,7 +28,7 @@ export const workOrderInsertSchema = {
   ],
 };
 
-export const employeeInsertSchema = {
+export const EmployeeSchema = {
   fields: [
     { label: "Fist Name", type: "text" },
     { label: "Last Name", type: "text" },
@@ -46,7 +47,13 @@ export const employeeInsertSchema = {
   ],
 };
 
-export const purchaseOrderInsertSchema = {
+export const WorkOrderEmployeeSchema = {
+  fields: [
+    { label: "Assigned At", type: "datetime-local" },
+  ],
+};
+
+export const PurchaseOrderSchema = {
   fields: [
     {
       label: "Employee",
@@ -61,7 +68,7 @@ export const purchaseOrderInsertSchema = {
   ],
 };
 
-export const purchaseOrderItemsInsertSchema = {
+export const PurchaseOrderItemSchema = {
   fields: [
     { label: "Unit Cost", type: "text" },
     { label: "Quantity", type: "text" },
@@ -79,7 +86,7 @@ export const purchaseOrderItemsInsertSchema = {
   ],
 };
 
-export const materialsInsertSchema = {
+export const MaterialSchema = {
   fields: [
     { label: "Name", type: "text" },
     {

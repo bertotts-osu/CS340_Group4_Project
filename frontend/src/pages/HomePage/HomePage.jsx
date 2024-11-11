@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import HeaderLabel from "../../components/HeaderLabel";
+import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
 import styles from "./HomePage.module.css";
 
 // define HomePage as a functional component
