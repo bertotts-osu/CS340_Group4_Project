@@ -22,15 +22,15 @@ public class WorkOrderEmployeeService {
 
     public WorkOrderEmployee createWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
         workOrderEmployeeRepository.insert(workOrderEmployee);
-        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWorkOrderID(), workOrderEmployee.getEmployeeID());
+        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 
     public WorkOrderEmployee updateWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
         workOrderEmployeeRepository.update(workOrderEmployee);
-        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWorkOrderID(), workOrderEmployee.getEmployeeID());
+        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 
     public void deleteWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
-        workOrderEmployeeRepository.delete(workOrderEmployee);
+        workOrderEmployeeRepository.delete(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 }
