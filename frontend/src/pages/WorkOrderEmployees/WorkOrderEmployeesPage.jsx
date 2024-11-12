@@ -15,16 +15,22 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const createSchemaTemplate = {
   fields: [
     {
+      name: "work_order_id",
       label: "Work Order",
       type: "dropdown",
       fetchOptions: true, //options to be fetched from API
     },
     {
+      name: "employee_id",
       label: "Employee Name",
       type: "dropdown",
       fetchOptions: true, //options to be fetched from API
     },
-    { label: "Assigned At", type: "datetime-local" },
+    {
+      name: "assigned_at",
+      label: "Assigned At",
+      type: "datetime-local"
+    },
   ],
 };
 

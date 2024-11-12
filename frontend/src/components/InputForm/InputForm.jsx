@@ -36,8 +36,8 @@ export default function InputForm({
               <input
                 type="text"
                 id={field.label}
-                name={field.label}
-                value={formData[field.label] || ""}
+                name={field.name}
+                value={formData[field.name] || ""}
                 onChange={handleChange}
                 placeholder={field.label}
                 className={styles.input}
@@ -47,8 +47,8 @@ export default function InputForm({
               <input
                 type="datetime-local"
                 id={field.label}
-                name={field.label}
-                value={formData[field.label] || ""}
+                name={field.name}
+                value={formData[field.name] || ""}
                 onChange={handleChange}
                 placeholder={field.label}
                 className={styles.input}
@@ -57,8 +57,8 @@ export default function InputForm({
             {field.type === "dropdown" && (
               <select
                 id={field.label}
-                name={field.label}
-                value={formData[field.label] || ""}
+                name={field.name}
+                value={formData[field.name] || ""}
                 onChange={handleChange}
                 className={styles.input}
               >
@@ -66,8 +66,8 @@ export default function InputForm({
                   Select {field.label}
                 </option>
                 {field.options.map((option, idx) => (
-                  <option key={idx} value={option}>
-                    {option}
+                  <option key={idx} value={option.value}>
+                    {option.display}
                   </option>
                 ))}
               </select>
