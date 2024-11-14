@@ -5,6 +5,7 @@ import edu.oregonstate.engr.classwork.backend.services.WorkOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class WorkOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkOrder> createWorkOrder(@RequestBody WorkOrder workOrder) {
+    public ResponseEntity<WorkOrder> createWorkOrder(@Validated @RequestBody WorkOrder workOrder) {
         WorkOrder createdWorkOrder = workOrderService.createWorkOrder(workOrder);
         return ResponseEntity.ok(createdWorkOrder);
     }
