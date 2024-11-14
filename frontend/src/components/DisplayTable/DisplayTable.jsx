@@ -1,50 +1,15 @@
 import PropTypes from "prop-types";
 import styles from "./DisplayTable.module.css";
 
-export default function DisplayTable({ data, editSchema, headers, selectedRows, isEditing, onRowChange, onSelectRow }) {
-  const renderInput = (key, value, rowID) => {
-    const field = editSchema.find((field) => field.key === key);
-    if (field && field.type === "uneditable") {
-      return <span>{value}</span>;
-    } else if (field && field.type === "dropdown") {
-      return (
-        <select
-          id={field.key}
-          name={field.key}
-          value={value || ""}
-          onChange={(e) => onRowChange(rowID, { [field.key]: e.target.value })}
-          className={styles.input}
-        >
-          <option value="" disabled>
-            Select {field.key}
-          </option>
-          {field.options.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      );
-    } else if (key.includes("At")) {
-      return (
-        <input
-          type="datetime-local"
-          value={value}
-          onChange={(e) => onRowChange(rowID, { [key]: e.target.value })}
-          className={styles.input}
-        />
-      );
-    }
-    return (
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onRowChange(rowID, { [key]: e.target.value })}
-        className={styles.input}
-      />
-    );
-  };
-
+export default function DisplayTable({
+  data,
+  contentSchema,
+  selectedRows,
+  mode,
+  onRowChange,
+  onSelectRow,
+  onSelectAllRows,
+}) {
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const options = {
@@ -59,42 +24,138 @@ export default function DisplayTable({ data, editSchema, headers, selectedRows, 
     return date.toLocaleString("en-US", options);
   };
 
+  const renderInput = (name, value, id) => {
+    const field = contentSchema.find((field) => field.name === name);
+    if (field) {
+      // Reset invalid state if the field is valid
+      const handleChange = (e) => {
+        onRowChange(id, { [field.name]: e.target.value });
+        if (e.target.checkValidity()) {
+          field.invalid = false;
+          e.target.classList.remove("invalid");
+        }
+      };
+
+      // apply the schema to the values to change their function (display vs input)
+      if (
+        (mode === "edit" && selectedRows.includes(id)) ||
+        (mode === "add" && id === data.length)
+      ) {
+        if (
+          (mode === "edit" && field.editType === "display") ||
+          (mode === "add" && field.addType === "display")
+        ) {
+          return <span>{value}</span>;
+        } else if (
+          (mode === "edit" && field.editType === "dropdown") ||
+          (mode === "add" && field.addType === "dropdown")
+        ) {
+          return (
+            <div className={styles.input_container}>
+              <select
+                id={field.name}
+                name={field.name}
+                value={value || ""}
+                required={field.required}
+                onChange={handleChange}
+                className={`${styles.input} ${
+                  field.invalid ? styles.invalid : ""
+                }`}
+              >
+                <option value="" disabled>
+                  Select {field.label}
+                </option>
+                {field.options.map((option, index) => (
+                  <option key={index} value={option.display}>
+                    {option.display}
+                  </option>
+                ))}
+              </select>
+              {field.invalid && (
+                <span className={styles.error_message}>*Required</span>
+              )}
+            </div>
+          );
+        } else if (
+          (mode === "edit" && field.editType !== "display") ||
+          (mode === "add" && field.addType !== "display")
+        ) {
+          return (
+            <div className={styles.input_container}>
+              <input
+                type={mode === "add" ? field.addType : field.editType}
+                name={field.name}
+                value={value}
+                required={field.required}
+                onChange={handleChange}
+                step={field.editType === "number" || field.addType === "number" ? field.step : undefined}
+                min={field.editType === "number" || field.addType === "number" ? field.min : undefined}
+                pattern={field.pattern ? field.pattern : undefined}
+                className={`${styles.input} ${
+                  field.invalid ? styles.invalid : ""
+                }`}
+              />
+              {field.invalid && (
+                <span className={styles.error_message}>*Required</span>
+              )}
+            </div>
+          );
+        }
+      } else {
+
+        if (field.name.includes("_at") && value) {
+          value = formatDateTime(value);
+        }
+        return <span>{value}</span>;
+      }
+    }
+  };
+
+  // render the table content
   if (data && data.length > 0) {
     return (
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
-              {headers.map((header, index) => (
-                <th key={index}>{header}</th>
-              ))}
+              <th>
+                <input
+                  key="select-all-checkbox"
+                  type="checkbox"
+                  onChange={onSelectAllRows}
+                />
+              </th>
+              {contentSchema
+                .filter(
+                  (item) =>
+                    item && (item.exclude === undefined || !item.exclude)
+                )
+                .map((item, index) => (
+                  <th key={index}>{item?.label || ""}</th>
+                ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {data.map((row) => (
               <tr
-                key={item.rowID}
+                key={row.id}
                 className={
-                  selectedRows.includes(item.rowID) ? styles["active-row"] : ""
+                  selectedRows.includes(row.id) ? styles["active-row"] : ""
                 }
               >
-                <td>{item.rowID}</td>
                 <td>
                   <input
                     type="checkbox"
-                    onChange={() => onSelectRow(item.rowID)}
-                    checked={selectedRows.includes(item.rowID)}
+                    onChange={() => onSelectRow(row.id)}
+                    checked={selectedRows.includes(row.id)}
                   />
                 </td>
-                {Object.keys(item).map(
-                  (key, index) =>
-                    key !== "rowID" && (
+                {contentSchema.map(
+                  (field, index) =>
+                    field &&
+                    (field.exclude === undefined || !field.exclude) && (
                       <td key={index}>
-                        {isEditing && selectedRows.includes(item.rowID)
-                          ? renderInput(key, item[key], item.rowID)
-                          : key.includes("At")
-                          ? formatDateTime(item[key])
-                          : item[key]}
+                        {renderInput(field.name, row[field.name], row.id)}
                       </td>
                     )
                 )}
@@ -110,10 +171,10 @@ export default function DisplayTable({ data, editSchema, headers, selectedRows, 
 
 DisplayTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  editSchema: PropTypes.arrayOf(PropTypes.object).isRequired,
-  headers: PropTypes.arrayOf(PropTypes.node).isRequired,
+  contentSchema: PropTypes.arrayOf(PropTypes.object).isRequired,
   selectedRows: PropTypes.arrayOf(PropTypes.number).isRequired,
-  isEditing: PropTypes.bool.isRequired,
+  mode: PropTypes.string.isRequired,
   onRowChange: PropTypes.func.isRequired,
   onSelectRow: PropTypes.func.isRequired,
+  onSelectAllRows: PropTypes.func.isRequired,
 };

@@ -4,15 +4,15 @@ import styles from "./WebsiteHeader.module.css";
 
 export default function WebsiteHeader() {
   return (
-    <>
-      <div className={styles.headerContainer}>
+    <div className={styles.content_container}>
+      <div className={styles.content_container}>
         <img src="/gutter.png" className={styles.headerImage}></img>
         <h1>LeavesFree Eaves </h1>
-      </div >
-      <div className={styles.bar}></div>
+      </div>
       <NavigationBar />
-      <div className={styles.content}></div>
-      <Outlet />
-    </>
+      <div className={styles.content}>
+      <Outlet/>
+      </div>
+    </div>
   );
 }

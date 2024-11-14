@@ -1,32 +1,33 @@
-.headerContainer {
+.content_container {
     display: flex;
-    align-items: center; /* Align items vertically in the center */
-    margin: 15px 0px 15px 0px;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    width: 100%;
-  }
-  
-  .headerImage {
-    margin-right: 10px; /* Add some space between the image and the heading */
-    width: 50px; /* Set the width of the image */
-    height: auto; /* Maintain the aspect ratio of the image */
-  }
-  
-  h1 {
-    margin: 0; /* Remove default margin from the heading */
-    color: #006e58;
+    margin:0px;
   }
 
   
-  .bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 1px; /* Set the height of the bar */
-    background-color: #D2D2D2; /* Set the background color to gray */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  .headerImage {
+    margin-right: 10px;
+    width: 50px;
+    height: auto;
   }
   
-  .content {
-    margin-top: 100px;
+  h1 {
+    margin: 0;
+    color: #00796b;
+    font-size: 30px;
+
   }
+
+  
+  /* .bar {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100vw;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #D2D2D2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  } */

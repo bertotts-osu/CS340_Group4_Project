@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  getWorkOrderEmployees,
+  getWorkOrderEmployeesWithNames,
   getEmployeeNameOptions,
   getWorkOrderOptions,
   createWorkOrderEmployee,
@@ -11,44 +11,42 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    {
-      name: "work_order_id",
-      label: "Work Order",
-      type: "dropdown",
-      fetchOptions: true, //options to be fetched from API
-    },
-    {
-      name: "employee_id",
-      label: "Employee Name",
-      type: "dropdown",
-      fetchOptions: true, //options to be fetched from API
-    },
-    {
-      name: "assigned_at",
-      label: "Assigned At",
-      type: "datetime-local"
-    },
-  ],
-};
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
+const tableSchemaTemplate = [
   {
-    key: "Work Order",
-    type: "uneditable",
+    name: "work_order_id",
+    label: "Work Order",
+    editType: "display",
+    addType: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+    required: true,
+    invalid: false,
   },
   {
-    key: "Employee Name",
-    type: "uneditable",
+    name: "employee_id",
+    exclude: true,
+  },
+  {
+    name: "employee_name",
+    label: "Employee Name",
+    editType: "display",
+    addType: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "assigned_at",
+    label: "Assigned",
+    editType: "datetime-local",
+    addType: "datetime-local",
+    required: true,
+    invalid: false,
   },
 ];
 
+
 const WorkOrderEmployeesPage = () => {
-  const [createSchema, setCreateSchema] = useState(createSchemaTemplate);
-  const [editSchema, setEditSchema] = useState(editSchemaTemplate);
+  const [contentSchema, setContentSchema] = useState(tableSchemaTemplate);
 
   // Set tab name
   useEffect(() => {
@@ -69,37 +67,28 @@ const WorkOrderEmployeesPage = () => {
   // Update the table data schemas
   useEffect(() => {
     if (employeeNameOptions && workOrderOptions) {
-      setCreateSchema({
-        ...createSchemaTemplate,
-        fields: createSchemaTemplate.fields.map((field) => {
-          if (field.fetchOptions && field.label === "Employee Name") {
-            return { ...field, options: employeeNameOptions };
-          } else if (field.fetchOptions && field.label === "Work Order") {
-            return { ...field, options: workOrderOptions };
-          }
-          return field;
-        }),
-      });
-      setEditSchema(
-        editSchemaTemplate.map((field) => {
-          if (field.fetchOptions && field.label === "Employee Name") {
-            return { ...field, options: employeeNameOptions };
-          } else if (field.fetchOptions && field.label === "Work Order") {
-            return { ...field, options: workOrderOptions };
+      setContentSchema( contentSchema =>
+        contentSchema.map((field) => {
+          if (field.fetchOptions) {
+            if (field.label === "Employee Name") {
+              return { ...field, options: employeeNameOptions };
+            } else if (field.label === "Work Order") {
+              return { ...field, options: workOrderOptions };
+            }
           }
           return field;
         })
       );
     }
   }, [employeeNameOptions, workOrderOptions]);
+  
 
   return (
     <DisplayTableContainer
       className={style.container}
       headerText={"Work Order Employees"}
-      createSchema={createSchema}
-      editSchema={editSchema}
-      fetchAPI={getWorkOrderEmployees}
+      contentSchema={contentSchema}
+      fetchAPI={getWorkOrderEmployeesWithNames}
       createAPI={createWorkOrderEmployee}
       updateAPI={updateWorkOrderEmployees}
       deleteAPI={deleteWorkOrderEmployees}

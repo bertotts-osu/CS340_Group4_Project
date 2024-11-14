@@ -44,7 +44,17 @@ export async function deleteWorkOrders(entries) {
   return response.data;
 }
 
-export async function getStageOptions() {
-  const response = await axios.get(`${import.meta.env.VITE_API_URL}/stages`);
-  return response.data;
+export async function getWorkOrderOptions() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/work-orders`,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data.map((workOrder) => {
+    return {
+      value: workOrder.work_order_id,
+      display: workOrder.work_order_id,
+    };
+  });
 }

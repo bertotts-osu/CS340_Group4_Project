@@ -20,7 +20,6 @@ export default function InputForm({
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    console.log("Form submitted:", formData);
   };
 
   return (

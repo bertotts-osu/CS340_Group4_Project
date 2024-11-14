@@ -1,12 +1,20 @@
 .navbar {
     display: flex;
-    justify-content: center; /* Center the navigation bar */
+    justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 10;
-    width: 100%;
+    padding: 15px 20px;
+    background-color: #6994b0;
     margin-top: 20px;
-    margin-bottom: 0px;
+    margin-bottom: 70px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: bold;
+    font-size: 16px;
+    font-weight: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d2d2d2;
+    width: 100vw;
+    left: 0;
+    right: 0;
   }
   
   .navList {
@@ -14,23 +22,26 @@
     display: flex;
     justify-content: center;
     margin: 0;
-    padding: 0;
+    padding: 0px;
     gap: 15px;
   }
   
   .navItem a {
-    color:#006e58;
-    font-weight: bold;
+    color:#2e5676;
     text-decoration: none;
-    padding: 10px 5px; /* Adjust padding to control the length of the underline */
-    border-bottom: 2px solid transparent; /* Add a transparent border for spacing */
-    transition: border-bottom 0.3s;
+    padding: 7px 15px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s, color 0.3s;
+    white-space: nowrap;
+
+    border-radius: 5px;
   }
   
   .navItem a:hover {
-    border-bottom: 2px solid black; /* Add a black line underneath on hover */
+    border-bottom: 2px solid #73b2e6;
+    color: #73b2e6;
   }
   
   .active {
-    border-bottom: 2px solid black; /* Add a black line underneath for active links */
+    border-bottom: 2px solid #2e5676;
   }

@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
 import DisplayTable from "../DisplayTable/DisplayTable.jsx";
 import DisplayTableButtons from "./DisplayTableButtons.jsx";
-import InputForm from "../InputForm/InputForm.jsx";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import style from "./DisplayTableContainer.module.css";
+import styles from "./DisplayTableContainer.module.css";
+import headerStyle from "../HeaderLabel/HeaderLabel.module.css";
 
 export default function DisplayTableContainer({
   headerText,
-  createSchema,
-  editSchema,
+  contentSchema,
   fetchAPI,
   createAPI,
   updateAPI,
@@ -20,22 +19,19 @@ export default function DisplayTableContainer({
 Declare State Variables
 */
   // Table States
-  const [initial_data, setInitialData] = useState([]);
-  const [headers, setHeaders] = useState([]);
+  const [initialData, setInitialData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [allSelected, setAllSelected] = useState(false);
   const [changedRows, setChangedRows] = useState([]);
 
   // Form States
-  const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [mode, setMode] = useState("display");
   const [resultMessage, setResultMessage] = useState(false);
 
   /*
 Manage API Requests
 */
-
   // Fetch Table Data
   const { data, refetch } = useQuery({
     queryKey: ["fetchData"],
@@ -49,51 +45,56 @@ Manage API Requests
   }, [data]);
 
   // Create New Object
-  const { mutate: submitData } = useMutation(createAPI, {
-    onSuccess: (submitData) => {
-      console.log("Success:", submitData);
+  const { mutate: createObject } = useMutation(createAPI, {
+    onSuccess: (createObject) => {
+      console.log("Success:", createObject);
       setResultMessage("Successfully created!");
+      setChangedRows([]);
+      setMode("display");
       refetch();
-      setIsCreating(false);
     },
     onError: (error) => {
-      if (error.response) {
-        setResultMessage(`Error: ${error.response.data}`);
-      } else
-      setResultMessage("Error: An unexpected error occurred");
+      if (error.response.status === 409) {
+        setResultMessage("Error: Duplicate entry.");
+      } else setResultMessage("Error: An unexpected error occurred");
+      setChangedRows([]);
+      setMode("display");
+      refetch();
     },
   });
 
   // Update Objects
-  const { mutate: updateData } = useMutation(updateAPI, {
-    onSuccess: (updateData) => {
-      console.log("Success:", updateData);
+  const { mutate: editObject } = useMutation(updateAPI, {
+    onSuccess: (editObject) => {
+      console.log("Success:", editObject);
       setResultMessage("Successfully updated!");
       setChangedRows([]);
+      setMode("display");
+      refetch();
     },
     onError: (error) => {
       if (error.response) {
         setResultMessage(`Error: ${error.response.data}`);
-      } else
-      setResultMessage("Error: An unexpected error occurred");
+      } else setResultMessage("Error: An unexpected error occurred");
+      setChangedRows([]);
+      setMode("display");
+      refetch();
     },
   });
 
   // Delete Objects
-  const { mutate: deleteData } = useMutation(deleteAPI, {
-    onSuccess: (deleteData) => {
-      console.log("Success:", deleteData);
-      setResultMessage(false);
+  const { mutate: deleteObject } = useMutation(deleteAPI, {
+    onSuccess: (deleteObject) => {
+      console.log("Success:", deleteObject);
+      setResultMessage("Successfully deleted!");
       setSelectedRows([]);
       setChangedRows([]);
       refetch();
-      setResultMessage("Successfully deleted!");
     },
     onError: (error) => {
       if (error.response) {
         setResultMessage(`Error: ${error.response.data}`);
-      } else
-      setResultMessage("Error: An unexpected error occurred");
+      } else setResultMessage("Error: An unexpected error occurred");
     },
   });
 
@@ -102,31 +103,37 @@ Handle Table Events
 */
   // Selects/Deselects all rows based on the header checkbox
   const handleSelectAllRows = useCallback(() => {
+    setResultMessage(false);
     // useCallback using memoization to reduce rerenders
-    if (!allSelected) {
-      setAllSelected(true);
-      setSelectedRows(tableData.map((item) => item.rowID));
-    } else {
-      setAllSelected(false);
-      setSelectedRows([]);
+    if (mode !== "add") {
+      if (!allSelected) {
+        setAllSelected(true);
+        setSelectedRows(tableData.map((row) => row.id));
+      } else {
+        setAllSelected(false);
+        setSelectedRows([]);
+      }
     }
-  }, [allSelected, tableData]); //will rerender when allSelected or tableData change
+  });
 
   // Select/Unselect a row when the row's checkbox is checked
-  const handleSelectRow = (rowID) => {
-    setSelectedRows((selectedRows) => {
-      if (selectedRows.includes(rowID)) {
-        return selectedRows.filter((id) => id !== rowID);
-      } else {
-        return [...selectedRows, rowID];
-      }
-    });
+  const handleSelectRow = (id) => {
+    setResultMessage(false);
+    if (mode !== "add") {
+      setSelectedRows((selectedRows) => {
+        if (selectedRows.includes(id)) {
+          return selectedRows.filter((rowId) => rowId !== id);
+        } else {
+          return [...selectedRows, id];
+        }
+      });
+    }
   };
 
   // Track edits to the form (this handles each input element's changes)
-  const handleRowChange = (rowID, change) => {
+  const handleRowChange = (id, change) => {
     // determine whether there has been a true change from the starting data
-    const initialRow = initial_data.find((row) => row.rowID === rowID);
+    const initialRow = initialData.find((row) => row.id === id);
     const hasChanged = !Object.keys(change).every(
       (key) => change[key] === initialRow[key]
     );
@@ -134,16 +141,14 @@ Handle Table Events
     if (hasChanged) {
       // update the table data with the new changes
       setTableData((tableData) =>
-        tableData.map((row) =>
-          row.rowID === rowID ? { ...row, ...change } : row
-        )
+        tableData.map((row) => (row.id === id ? { ...row, ...change } : row))
       );
 
       // mark the row as changed
       setChangedRows((changedRows) => {
         // check if the row has already been changed
         const indexOfPreexistingRow = changedRows.findIndex(
-          (row) => row.rowID === rowID
+          (row) => row.id === id
         );
 
         // update the existing changed row
@@ -165,143 +170,145 @@ Handle Table Events
   /*
 Modify the Table Data For Display
 */
-  // Prepend table-specifc headers to the data headers
-  useEffect(() => {
-    if (data && data.length > 0) {
-      setHeaders([
-        "#",
-        <input
-          key="select-all-checkbox"
-          type="checkbox"
-          onChange={handleSelectAllRows}
-          checked={allSelected}
-        />,
-        ...Object.keys(data[0]),
-      ]);
-    }
-  }, [data, allSelected, handleSelectAllRows]);
-
   // Add row numbers to the table data
   useEffect(() => {
     if (data && data.length > 0) {
       let index = 0;
-      const updatedData = data.map((item) => {
+      const updatedData = data.map((row) => {
         index += 1;
-        return { rowID: index, ...item };
+        return { id: index, ...row };
       });
       setTableData(updatedData);
       setInitialData(updatedData);
     }
-  }, [data, editSchema]);
+  }, [data]);
 
   /*
 Handle Form Events
 */
 
-  const handleAddButtonPress = () => {
+  const handleAddButtonPress = (e) => {
+    e.preventDefault();
     setSelectedRows([]);
-    setIsCreating(true);
+    const newRow = contentSchema.reduce(
+      (acc, field) => {
+        if (!field.exclude) {
+          acc[field.name] = field.defaultValue || "";
+        }
+        return acc;
+      },
+      { id: tableData.length + 1 }
+    );
+
+    setTableData([...tableData, newRow]);
+    setInitialData([...initialData, newRow]);
+    setMode("add");
     setResultMessage(false);
   };
 
-  const handleEditButtonPress = () => {
+  const handleEditButtonPress = (e) => {
+    e.preventDefault();
     if (selectedRows.length > 0) {
-      setIsEditing(true);
+      setMode("edit");
       setResultMessage(false);
     }
   };
 
-  const handleDeleteButtonPress = () => {
+  const handleDeleteButtonPress = (e) => {
+    e.preventDefault();
     if (selectedRows.length > 0) {
       const objects2delete = selectedRows.map((row) => {
-        const rowObject = tableData.find((item) => item.rowID === row);
-        // filter out the rowID key/value pair from object data (it was added for display purposes)
+        const rowObject = tableData.find((item) => item.id === row);
+        // filter out the id key/value pair from object data (it was added for display purposes)
         if (rowObject) {
           return Object.fromEntries(
-            Object.entries(rowObject).filter(([key]) => key !== "rowID")
+            Object.entries(rowObject).filter(([key]) => key !== "id")
           );
         }
       });
-      deleteData(objects2delete);
+      deleteObject(objects2delete);
     }
   };
 
-  const handleSaveButtonPress = () => {
-    if (changedRows.length > 0) {
-      const objects2update = changedRows
-        .map((row) => {
-          const rowObject = tableData.find((item) => item.rowID === row.rowID);
-          // Filter out the rowID key/value pair from object data (it was added for display purposes)
-            return Object.fromEntries(
-              Object.entries(rowObject).filter(([key]) => key !== "rowID")
-            );
-          });
-      updateData(objects2update);
-      setSelectedRows([]);
-      setIsEditing(false);
+  const handleSaveButtonPress = (e) => {
+    e.preventDefault();
+    const form = e.target.closest("form");
+    const invalidFields = form.querySelectorAll(":invalid");
+    if (invalidFields.length > 0) {
+      invalidFields.forEach((field) => {
+        field.classList.add("invalid");
+        const fieldSchema = contentSchema.find((f) => f.name === field.name);
+        if (fieldSchema) {
+          fieldSchema.invalid = true;
+        }
+      });
+      setResultMessage("Error: Please fill out all required fields.");
+    } else {
+      setResultMessage(false);
+      if (changedRows.length > 0) {
+        const changes = changedRows.map((row) => {
+          const rowObject = tableData.find((item) => item.id === row.id);
+          // Filter out the id key/value pair from object data (it was added for display purposes)
+          return Object.fromEntries(
+            Object.entries(rowObject).filter(([key]) => key !== "id")
+          );
+        });
+        mode === "add" ? createObject(changes) : editObject(changes);
+        setSelectedRows([]);
+        setMode("display");
+      }
     }
   };
 
-  const handleSubmitButtonPress = (formData) => {
-    submitData(formData);
-  };
-
-  const handleCancelButtonPress = () => {
+  const handleCancelButtonPress = (e) => {
+    e.preventDefault();
+    if (mode === "add") {
+      setTableData((tableData) => tableData.filter((row) => row.id !== tableData.length));
+    }
     setSelectedRows([]);
-    setIsEditing(false);
-    setIsCreating(false);
+    setMode("display");
     setResultMessage(false);
   };
 
   /*
 Render the JSX Content
 */
-  if (isCreating) {
-    return (
-      <>
-        <InputForm
-          label={"Work Order Employees"}
-          schema={createSchema}
-          onCancel={handleCancelButtonPress}
-          onSubmit={handleSubmitButtonPress}
-          resultMessage={resultMessage}
-        />
-      </>
-    );
-  }
   return (
-    <div className={style.container}>
-      <HeaderLabel text={headerText} />
+    <form
+      className={styles.form_container}
+      onSubmit={handleSaveButtonPress}
+      noValidate
+    >
+      <HeaderLabel text={headerText} className={headerStyle.header}/>
       <DisplayTable
         data={tableData}
-        editSchema={editSchema}
-        headers={headers}
+        contentSchema={contentSchema}
         selectedRows={selectedRows}
-        isEditing={isEditing}
+        mode={mode}
         onRowChange={handleRowChange}
         onSelectRow={handleSelectRow}
+        onSelectAllRows={handleSelectAllRows}
       />
       {resultMessage && resultMessage.includes("Error:") ? (
-        <div className={style.msgError}>{resultMessage}</div>
+        <div className={styles.msgError}>{resultMessage}</div>
       ) : (
-        <div className={style.msgSuccess}>{resultMessage}</div>
+        <div className={styles.msgSuccess}>{resultMessage}</div>
       )}
       <DisplayTableButtons
-        onDelete={handleDeleteButtonPress}
-        onEdit={handleEditButtonPress}
+        mode={mode}
         onAdd={handleAddButtonPress}
-        isEditing={isEditing}
+        onEdit={handleEditButtonPress}
+        onDelete={handleDeleteButtonPress}
         onSave={handleSaveButtonPress}
         onCancel={handleCancelButtonPress}
       />
-    </div>
+    </form>
   );
 }
 
 DisplayTableContainer.propTypes = {
   headerText: PropTypes.string.isRequired,
-  createSchema: PropTypes.object.isRequired,
-  editSchema: PropTypes.arrayOf(PropTypes.object).isRequired,
+  contentSchema: PropTypes.arrayOf(PropTypes.object).isRequired,
   fetchAPI: PropTypes.func.isRequired,
   createAPI: PropTypes.func.isRequired,
   updateAPI: PropTypes.func.isRequired,

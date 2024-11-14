@@ -28,9 +28,6 @@ public class WorkOrderEmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkOrderEmployee> createWorkOrderEmployee(@Validated @RequestBody WorkOrderEmployee workOrderEmployee) {
-        WorkOrderEmployee createdWorkOrderEmployee = workOrderEmployeeService.createWorkOrderEmployee(workOrderEmployee);
-        return ResponseEntity.ok(createdWorkOrderEmployee);
     }
 
     @PutMapping
