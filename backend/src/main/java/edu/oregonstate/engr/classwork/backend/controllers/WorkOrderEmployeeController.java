@@ -33,6 +33,7 @@ public class WorkOrderEmployeeController {
 
     @PostMapping
     public ResponseEntity<?> createWorkOrderEmployee(@RequestBody WorkOrderEmployee workOrderEmployee) {
+        System.out.println("Received WorkOrderEmployee data: " + workOrderEmployee);
         try {
             WorkOrderEmployee createdWorkOrderEmployee = workOrderEmployeeService.createWorkOrderEmployee(workOrderEmployee);
             return ResponseEntity.ok(createdWorkOrderEmployee);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  getPurchaseOrders,
+  getPurchaseOrdersWithEmployeeNames,
   getEmployeeNameOptions,
   getWorkOrderOptions,
   createPurchaseOrder,
@@ -11,39 +11,48 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    {
-      label: "Employee",
-      type: "dropdown",
-      options: ["Option 1 - pull from db", "Option 2 - pull from db"],
-    },
-    {
-      label: "Work Order ID",
-      type: "dropdown",
-      options: ["Option 1 - pull from db", "Option 2 - pull from db"],
-    },
-  ],
-};
-
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
+const tableSchemaTemplate = [
   {
-    key: "Work Order",
-    type: "uneditable",
+    name: "purchase_order_id",
+    label: "Purchase Order",
+    editType: "display",
+    addType: "display",
   },
   {
-    key: "Employee Name",
-    type: "uneditable",
+    name: "created_at",
+    label: "Created At",
+    editType: "datetime-local",
+    addType: "datetime-local",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "employee_id",
+    exclude: true,
+  },
+  {
+    name: "employee_name",
+    label: "Employee Name",
+    editType: "dropdown",
+    addType: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+    defaultValue: "",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "work_order_id",
+    label: "Work Order",
+    editType: "dropdown",
+    addType: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+    required: false,
+    invalid: false,
   },
 ];
 
 const PurchaseOrdersPage = () => {
-  const [createSchema, setCreateSchema] = useState(createSchemaTemplate);
-  const [editSchema, setEditSchema] = useState(editSchemaTemplate);
+  const [contentSchema, setContentSchema] = useState(tableSchemaTemplate);
 
   // Set tab name
   useEffect(() => {
@@ -61,41 +70,30 @@ const { data: workOrderOptions } = useQuery({
   queryFn: getWorkOrderOptions,
 });
 
-// Update the table data schemas
-useEffect(() => {
-  if (employeeNameOptions && workOrderOptions) {
-    setCreateSchema({
-      ...createSchemaTemplate,
-      fields: createSchemaTemplate.fields.map((field) => {
-        if (field.fetchOptions && field.label === "Employee Name") {
-          return { ...field, options: employeeNameOptions };
-        } else if (field.fetchOptions && field.label === "Work Order") {
-          return { ...field, options: workOrderOptions };
-        }
-        return field;
-      }),
-    });
-    setEditSchema(
-      editSchemaTemplate.map((field) => {
-        if (field.fetchOptions && field.label === "Employee Name") {
-          return { ...field, options: employeeNameOptions };
-        } else if (field.fetchOptions && field.label === "Work Order") {
-          return { ...field, options: workOrderOptions };
-        }
-        return field;
-      })
-    );
-    console;
-  }
-}, [employeeNameOptions, workOrderOptions]);
+  // Update the table data schemas
+  useEffect(() => {
+    if (employeeNameOptions && workOrderOptions) {
+      setContentSchema( contentSchema =>
+        contentSchema.map((field) => {
+          if (field.fetchOptions) {
+            if (field.label === "Employee Name") {
+              return { ...field, options: employeeNameOptions };
+            } else if (field.label === "Work Order") {
+              return { ...field, options: workOrderOptions };
+            }
+          }
+          return field;
+        })
+      );
+    }
+  }, [employeeNameOptions, workOrderOptions]);
 
   return (
     <DisplayTableContainer
       className={style.container}
       headerText={"Purchase Orders"}
-      createSchema={createSchema}
-      editSchema={editSchema}
-      fetchAPI={getPurchaseOrders}
+      contentSchema={contentSchema}
+      fetchAPI={getPurchaseOrdersWithEmployeeNames}
       createAPI={createPurchaseOrder}
       updateAPI={updatePurchaseOrders}
       deleteAPI={deletePurchaseOrders}

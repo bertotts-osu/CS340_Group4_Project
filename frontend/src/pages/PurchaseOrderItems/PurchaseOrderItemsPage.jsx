@@ -1,6 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { 
-  getPurchaseOrderItems,
+  getPurchaseOrderItemsWithMaterialNames,
+  getPurchaseOrderOptions,
+  getMaterialOptions,
   createPurchaseOrderItem,
   updatePurchaseOrderItems,
   deletePurchaseOrderItems,
@@ -8,52 +11,114 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    { label: "Unit Cost", type: "text" },
-    { label: "Quantity", type: "text" },
-    { label: "Estimated Delivery Date", type: "text" },
-    {
-      label: "Delivery Type",
-      type: "dropdown",
-      options: ["Stock", "Ship"],
-    },
-    {
-      label: "Material",
-      type: "dropdown",
-      options: ["Option 1 - pull from db", "Option 2 - pull from db"],
-    },
-  ],
-};
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
+const tableSchemaTemplate = [
   {
-    key: "Work Order",
-    type: "uneditable",
+    name: "purchase_order_item_id",
+    label: "Purchase Order Item",
+    editType: "display",
+    addType: "display",
   },
   {
-    key: "Employee Name",
-    type: "uneditable",
+    name: "unit_cost",
+    label: "Unit Cost",
+    editType: "text",
+    addType: "text",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "quantity",
+    label: "Quantity",
+    editType: "text",
+    addType: "text",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "estimated_delivery_date",
+    label: "Estimated Delivery",
+    editType: "date",
+    addType: "date",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "delivery_type",
+    label: "Delivery Type",
+    editType: "dropdown",
+    addType: "dropdown",
+    options: [
+      {display: "Ship"},
+      {display: "Stock"},
+    ]
+  },
+  {
+    name: "purchase_order_id",
+    label: "Purchase Order",
+    editType: "dropdown",
+    addType: "dropdown",
+    fetchOptions: true, //options to be fetched from API
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "material_id",
+    exclude: true,
+  },
+  {
+    name: "material_name",
+    label: "Material",
+    editType: "dropdown",
+    addType: "dropdown",
+    fetchOptions: true,  //options to be fetched from API
+    required: true,
+    invalid: false,
   },
 ];
 
 const PurchaseOrderItemsPage = () => {
-
+  const [contentSchema, setContentSchema] = useState(tableSchemaTemplate);
 
   // Set tab name
   useEffect(() => {
     document.title = "LeavesFree Eaves - Purchase Order Items";
   }, []);
+  
+  // Fetch Dropdown options
+  const { data: materialOptions } = useQuery({
+    queryKey: ["mterialOptions"],
+    queryFn: getMaterialOptions,
+  });
+
+  const { data: purchaseOrderOptions } = useQuery({
+    queryKey: ["workOrderOpurchaseOrderOptionsptions"],
+    queryFn: getPurchaseOrderOptions,
+  });
+
+  // Update the table data schemas
+  useEffect(() => {
+    if (materialOptions && purchaseOrderOptions) {
+      setContentSchema( contentSchema =>
+        contentSchema.map((field) => {
+          if (field.fetchOptions) {
+            if (field.label === "Material") {
+              return { ...field, options: materialOptions };
+            } else if (field.label === "Purchase Order") {
+              return { ...field, options: purchaseOrderOptions };
+            }
+          }
+          return field;
+        })
+      );
+    }
+  }, [materialOptions, purchaseOrderOptions]);
 
   return (
     <DisplayTableContainer
       className={style.container}
       headerText={"Purchase Order Items"}
-      createSchema={createSchemaTemplate}
-      editSchema={editSchemaTemplate}
-      fetchAPI={getPurchaseOrderItems}
+      contentSchema={contentSchema}
+      fetchAPI={getPurchaseOrderItemsWithMaterialNames}
       createAPI={createPurchaseOrderItem}
       updateAPI={updatePurchaseOrderItems}
       deleteAPI={deletePurchaseOrderItems}

@@ -8,42 +8,71 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    { label: "Fist Name", type: "text" },
-    { label: "Last Name", type: "text" },
-    { label: "Email", type: "text" },
-    { label: "Phone Number", type: "text" },
-    {
-      label: "Status",
-      type: "dropdown",
-      options: ["Active", "Inactive"],
-    },
-    {
-      label: "Skill Level",
-      type: "dropdown",
-      options: ["Apprentice", "Associate", "Principal"],
-    },
-  ],
-};
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
+const tableSchemaTemplate = [
   {
-    key: "Employee ID",
-    type: "uneditable",
+    name: "employee_id",
+    label: "Employee ID",
+    editType: "display",
+    addType: "display",
   },
   {
+    name: "first_name",
+    label: "First Name",
+    editType: "text",
+    addType: "text",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "last_name",
+    label: "Last Name",
+    editType: "text",
+    addType: "text",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "email",
+    label: "Email",
+    editType: "email",
+    addType: "email",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "phone_number",
+    label: "Phone Number",
+    editType: "tel",
+    addType: "tel",
+    pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "status",
     label: "Status",
-    type: "dropdown",
-    options: ["Active", "Inactive"],
+    editType: "dropdown",
+    addType: "dropdown",
+    options: [
+      {display: "Active"},
+      {display: "Inactive"}
+    ],
+    required: true,
+    invalid: false,
   },
   {
-    label: "Skill Level",
-    type: "dropdown",
-    options: ["Apprentice", "Associate", "Principal"],
-  },
+    name: "skill_level",
+    label: "Skill Levl",
+    editType: "dropdown",
+    addType: "dropdown",
+    options: [
+      {display: "Apprentice"},
+      {display: "Associate"},
+      {display: "Principal"}
+    ],
+    required: true,
+    invalid: false,
+  }
 ];
 
 const EmployeesPage = () => {
@@ -57,8 +86,7 @@ const EmployeesPage = () => {
     <DisplayTableContainer
       className={style.container}
       headerText={"Employees"}
-      createSchema={createSchemaTemplate}
-      editSchema={editSchemaTemplate}
+      contentSchema={tableSchemaTemplate}
       fetchAPI={getEmployees}
       createAPI={createEmployee}
       updateAPI={updateEmployees}

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import {
   getWorkOrders,
-  getStageOptions,
   createWorkOrder,
   updateWorkOrders,
   deleteWorkOrders,
@@ -10,93 +8,149 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    { 
-      label: "Size",
-      type: "dropdown",
-      options: [
-        "Small",
-        "Medium",
-        "Large"
-      ],
-    },
-    { label: "Street", type: "text" },
-    { label: "City", type: "text" },
-    { label: "State", type: "text" },
-    { label: "Zip", type: "text" },
+const tableSchemaTemplate = [
     {
-      label: "Stage",
-      type: "dropdown",
-      fetchOptions: true, //options to be fetched from API
+      name: "work_order_id",
+      label: "Work Order",
+      editType: "display",
+      addType: "display",
+      invalid: false,
+      exclude: false,
     },
-    { label: "Applied At", type: "datetime-local" },
-    { label: "Estimated At", type: "datetime-local" },
-    { label: "Scheduled At", type: "datetime-local" },
-    { label: "Started At", type: "datetime-local" },
-    { label: "Completed At", type: "datetime-local" },
-    { label: "On Hold At", type: "datetime-local" },
-    { label: "Cancelled At", type: "datetime-local" },
-  ],
-};
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
-  {
-    key: "Work Order",
-    type: "uneditable",
-  },
-  {
-    label: "Stage",
-    type: "dropdown",
-    fetchOptions: true, //options to be fetched from API
-  },
+    {
+      name: "stage",
+      label: "Stage",
+      editType: "dropdown",
+      addType: "dropdown",
+      options: [
+        { display: "Applied"},
+        { display: "Estimated"},
+        { display: "Paid"},
+        { display: "Scheduled"},
+        { display: "In Progress"},
+        { display: "Completed"},
+        { display: "On Hold"},
+        { display: "Cancelled"}
+      ],
+      required: true,
+      invalid: false,
+    },
+    { 
+      name: "size",
+      label: "Size",
+      editType: "dropdown",
+      addType: "dropdown",
+      options: [
+        { display: "Small"},
+        { display: "Medium"},
+        { display: "Large"}
+      ],
+      required: true,
+      invalid: false,
+    },
+    { 
+      name: "street",
+      label: "Street",
+      editType: "text",
+      addType: "text",
+      required: true,
+      invalid: false,
+    },
+    { 
+      name: "city",
+      label: "City",
+      editType: "text",
+      addType: "text",
+      required: true,
+      invalid: false,
+    },
+    { 
+      name: "state",
+      label: "State",
+      editType: "text",
+      addType: "text",
+      required: true,
+      invalid: false,
+    },
+    { 
+      name: "zip",
+      label: "Zip",
+      editType: "text",
+      addType: "text",
+      required: true,
+      invalid: false,
+    },
+    {
+      name: "applied_at",
+      label: "Applied",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "estimated_at",
+      label: "Estimated",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "scheduled_at",
+      label: "Scheduled",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "started_at",
+      label: "Started",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "completed_at",
+      label: "Completed",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "on_hold_at",
+      label: "On Hold",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
+    {
+      name: "cancelled_at",
+      label: "Cancelled",
+      editType: "datetime-local",
+      addType: "datetime-local",
+      required: false,
+      invalid: false,
+    },
 ];
 
 const WorkOrdersPage = () => {
-  const [createSchema, setCreateSchema] = useState(createSchemaTemplate);
-  const [editSchema, setEditSchema] = useState(editSchemaTemplate);
+
 
   // Set tab name
   useEffect(() => {
     document.title = "LeavesFree Eaves - Work Orders";
   }, []);
 
-  // Fetch Dropdown options
-  const { data: stageOptions } = useQuery({
-    queryKey: ["stageOptions"],
-    queryFn: getStageOptions,
-  });
-
-  useEffect(() => {
-    if (stageOptions) {
-      setCreateSchema({
-        ...createSchemaTemplate,
-        fields: createSchemaTemplate.fields.map((field) => {
-          if (field.fetchOptions && field.label === "Stage") {
-            return { ...field, options: stageOptions };
-          }
-          return field;
-        }),
-      });
-      setEditSchema(
-        editSchemaTemplate.map((field) => {
-          if (field.fetchOptions && field.label === "Stage") {
-            return { ...field, options: stageOptions };
-          }
-          return field;
-        })
-      );
-    }
-  }, [stageOptions]);
-
   return (
     <DisplayTableContainer
       className={style.container}
       headerText={"Work Orders"}
-      createSchema={createSchema}
-      editSchema={editSchema}
+      contentSchema={tableSchemaTemplate}
       fetchAPI={getWorkOrders}
       createAPI={createWorkOrder}
       updateAPI={updateWorkOrders}

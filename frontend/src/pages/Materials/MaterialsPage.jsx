@@ -8,28 +8,52 @@ import {
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 
-// Input form schema
-const createSchemaTemplate = {
-  fields: [
-    { label: "Name", type: "text" },
-    {
-      label: "Unit",
-      type: "dropdown",
-      options: ["FT", "EA"],
-    },
-    { label: "Quantity Available", type: "text" },
-  ],
-};
-
-// Schema that maps which input fields should be used for particular columns when editing
-const editSchemaTemplate = [
+const tableSchemaTemplate = [
   {
-    key: "Work Order",
-    type: "uneditable",
+    name: "material_id",
+    label: "Material",
+    editType: "display",
+    addType: "display",
   },
   {
-    key: "Employee Name",
-    type: "uneditable",
+    name: "name",
+    label: "Material Name",
+    editType: "text",
+    addType: "text",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "unit",
+    label: "Unit",
+    editType: "dropdown",
+    addType: "dropdown",
+    options: [
+      {display: "EA"},
+      {display: "FT"},
+    ],
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "unit_cost",
+    label: "Unit Cost",
+    editType: "number",
+    addType: "number",
+    min: "1.00",
+    step: "0.01",
+    required: true,
+    invalid: false,
+  },
+  {
+    name: "quantity_available",
+    label: "Quantity Available",
+    editType: "number",
+    addType: "number",
+    min: "1",
+    step: "1",
+    required: true,
+    invalid: false,
   },
 ];
 
@@ -44,8 +68,7 @@ const MaterialsPage = () => {
     <DisplayTableContainer
       className={style.container}
       headerText={"Materials"}
-      createSchema={createSchemaTemplate}
-      editSchema={editSchemaTemplate}
+      contentSchema={tableSchemaTemplate}
       fetchAPI={getMaterials}
       createAPI={createMaterial}
       updateAPI={updateMaterials}
