@@ -30,7 +30,7 @@ public class WorkOrderEmployeeService {
         return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 
-    public void deleteWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
-        workOrderEmployeeRepository.delete(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
+    public void deleteWorkOrderEmployee(int work_order_id, int employee_id) {
+        workOrderEmployeeRepository.delete(work_order_id, employee_id);
     }
 }

@@ -5,6 +5,7 @@ import edu.oregonstate.engr.classwork.backend.services.WorkOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +31,6 @@ public class WorkOrderController {
     }
 
     @PostMapping
-    @CrossOrigin(origins = "*") // enables requests to be sent from any origin
-    public ResponseEntity<WorkOrder> createWorkOrder(@RequestBody WorkOrder workOrder) {
         WorkOrder createdWorkOrder = workOrderService.createWorkOrder(workOrder);
         return ResponseEntity.ok(createdWorkOrder);
     }
