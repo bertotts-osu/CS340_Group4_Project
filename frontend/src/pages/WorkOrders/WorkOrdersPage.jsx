@@ -11,7 +11,7 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const tableSchemaTemplate = [
     {
       name: "work_order_id",
-      label: "Work Order",
+      label: "Work Order ID",
       editType: "display",
       addType: "display",
       invalid: false,
@@ -82,7 +82,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "applied_at",
-      label: "Applied",
+      label: "Applied At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -90,7 +90,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "estimated_at",
-      label: "Estimated",
+      label: "Estimated At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -98,7 +98,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "scheduled_at",
-      label: "Scheduled",
+      label: "Scheduled At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -106,7 +106,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "started_at",
-      label: "Started",
+      label: "Started At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -114,7 +114,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "completed_at",
-      label: "Completed",
+      label: "Completed At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -122,7 +122,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "on_hold_at",
-      label: "On Hold",
+      label: "On Hold At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
@@ -130,7 +130,7 @@ const tableSchemaTemplate = [
     },
     {
       name: "cancelled_at",
-      label: "Cancelled",
+      label: "Cancelled At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,

@@ -11,7 +11,7 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const tableSchemaTemplate = [
   {
     name: "material_id",
-    label: "Material",
+    label: "Material ID",
     editType: "display",
     addType: "display",
   },

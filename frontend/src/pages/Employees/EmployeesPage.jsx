@@ -62,7 +62,7 @@ const tableSchemaTemplate = [
   },
   {
     name: "skill_level",
-    label: "Skill Levl",
+    label: "Skill Level",
     editType: "dropdown",
     addType: "dropdown",
     options: [
