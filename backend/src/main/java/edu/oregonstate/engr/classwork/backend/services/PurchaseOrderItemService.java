@@ -24,4 +24,13 @@ public class PurchaseOrderItemService {
         int purchase_order_item_id = purchaseOrderItemRepository.insert(purchaseOrderItem);
         return purchaseOrderItemRepository.getById(purchase_order_item_id);
     }
+
+    public PurchaseOrderItem updatePurchaseOrderItem(PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItemRepository.update(purchaseOrderItem);
+        return purchaseOrderItemRepository.getById(purchaseOrderItem.getPurchase_order_item_id());
+    }
+
+    public void deletePurchaseOrderItem(int purchase_order_item_id) {
+        purchaseOrderItemRepository.delete(purchase_order_item_id);
+    }
 }

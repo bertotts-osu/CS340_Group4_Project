@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/materials")
-@CrossOrigin(origins = "*") // enables requests to be sent from any origin
+@CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class MaterialController {
 
     private final MaterialService materialService;
@@ -33,5 +33,17 @@ public class MaterialController {
     public ResponseEntity<Material> createMaterial(@RequestBody Material material) {
         Material createdMaterial = materialService.createMaterial(material);
         return ResponseEntity.ok(createdMaterial);
+    }
+
+    @PutMapping
+    public ResponseEntity<Material> updateMaterial(@RequestBody Material material) {
+        Material updatedMaterial = materialService.updateMaterial(material);
+        return ResponseEntity.ok(updatedMaterial);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMaterial(@RequestParam int material_id) {
+        materialService.deleteMaterial(material_id);
+        return ResponseEntity.noContent().build();
     }
 }

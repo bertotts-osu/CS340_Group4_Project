@@ -72,4 +72,40 @@ public class WorkOrderRepository {
                 .update(keyHolder);
         return keyHolder.getKey().intValue();
     }
+
+    public int update(WorkOrder workOrder) {
+        String sql = """
+            UPDATE WorkOrders
+            SET size = :size, street = :street, city = :city, state = :state, zip = :zip, stage = :stage,
+                applied_at = :applied_at, estimated_at = :estimated_at, scheduled_at = :scheduled_at,
+                started_at = :started_at, completed_at = :completed_at, on_hold_at = :on_hold_at, canceled_at = :canceled_at
+            WHERE work_order_id = :work_order_id;
+            """;
+        return jdbcClient.sql(sql)
+                .param("size", workOrder.getSize().toString())
+                .param("street", workOrder.getStreet())
+                .param("city", workOrder.getCity())
+                .param("state", workOrder.getState())
+                .param("zip", workOrder.getZip())
+                .param("stage", workOrder.getStage().toString().replace("_", " "))
+                .param("applied_at", workOrder.getApplied_at(), Types.TIMESTAMP)
+                .param("estimated_at", workOrder.getEstimated_at(), Types.TIMESTAMP)
+                .param("scheduled_at", workOrder.getScheduled_at(), Types.TIMESTAMP)
+                .param("started_at", workOrder.getStarted_at(), Types.TIMESTAMP)
+                .param("completed_at", workOrder.getCompleted_at(), Types.TIMESTAMP)
+                .param("on_hold_at", workOrder.getOn_hold_at(), Types.TIMESTAMP)
+                .param("canceled_at", workOrder.getCanceled_at(), Types.TIMESTAMP)
+                .param("work_order_id", workOrder.getWork_order_id())
+                .update();
+    }
+
+    public void delete(int work_order_id) {
+        String sql = """
+                DELETE FROM WorkOrders
+                WHERE work_order_id = :work_order_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("work_order_id", work_order_id)
+                .update();
+    }
 }

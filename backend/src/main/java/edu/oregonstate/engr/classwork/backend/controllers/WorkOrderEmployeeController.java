@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/work-order-employees")
-@CrossOrigin(origins = "*") // enables requests to be sent from any origin
+@CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class WorkOrderEmployeeController {
 
     private final WorkOrderEmployeeService workOrderEmployeeService;

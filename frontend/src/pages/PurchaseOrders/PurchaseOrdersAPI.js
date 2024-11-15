@@ -90,3 +90,18 @@ export async function getPurchaseOrdersWithEmployeeNames() {
     };
   });
 }
+
+export async function getPurchaseOrderOptions() {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}${path}`,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data.map((purchaseOrder) => {
+    return {
+      value: purchaseOrder.purchase_order_id,
+      display: purchaseOrder.purchase_order_id,
+    };
+  });
+}

@@ -53,4 +53,29 @@ public class MaterialRepository {
                 .update(keyHolder);
         return keyHolder.getKey().intValue();
     }
+
+    public void update(Material material) {
+        String sql = """
+                UPDATE Materials
+                SET name = :name, unit = :unit, unit_cost = :unit_cost, quantity_available = :quantity_available
+                WHERE material_id = :material_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("name", material.getName())
+                .param("material_id", material.getMaterial_id())
+                .param("unit", material.getUnit().toString())
+                .param("unit_cost", material.getUnit_cost())
+                .param("quantity_available", material.getQuantity_available())
+                .update();
+    }
+
+    public void delete(int material_id) {
+        String sql = """
+                DELETE FROM Materials
+                WHERE material_id = :material_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("material_id", material_id)
+                .update();
+    }
 }
