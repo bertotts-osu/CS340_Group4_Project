@@ -10,7 +10,7 @@ export async function getWorkOrderEmployees() {
   return response.data;
 }
 
-export async function createWorkOrderEmployee(rows) {
+export async function createWorkOrderEmployee(entries) {
   const employees = await getEmployeeNameOptions();
 
   // Generate an employee name/id map
@@ -19,45 +19,54 @@ export async function createWorkOrderEmployee(rows) {
     return acc;
   }, {});
 
-  // Process each row in the array and post individually
-  for (const row of rows) {
+  const promises = entries.map((entry) => {
     const updatedRow = {
-      ...row,
-      employee_id: employeeMap[row.employee_name], // add employee_id as an attribute
+      ...entry,
+      employee_id: employeeMap[entry.employee_name], // add employee_id as an attribute
     };
     delete updatedRow.employee_name; //remove employee_name attribute
-
-    const response = await axios.post(
+    return axios.post(
       `${import.meta.env.VITE_API_URL}/work-order-employees`,
       updatedRow,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
+      { headers: { "Content-Type": "application/json" } }
     );
-    return response.data;
+  });
+  try {
+    const responses = await Promise.all(promises);
+    return responses.map((response) => response.data);
+  } catch (error) {
+    console.error("Error creating work order employee:", error);
+    throw error;
   }
 }
 
 export async function updateWorkOrderEmployees(changes) {
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/work-order-employees`,
-    changes,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data;
+  const promises = changes.map((row) => {
+    return axios.put(
+      `${import.meta.env.VITE_API_URL}/work-order-employees`,
+      row,
+      { headers: { "Content-Type": "application/json" } }
+    );
+  });
+
+  const results = await Promise.allSettled(promises);
+  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  return { successes, errors };
 }
 
 export async function deleteWorkOrderEmployees(entries) {
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_URL}/work-order-employees`,
-    {
+  const promises = entries.map((entry) => {
+    const url = `${import.meta.env.VITE_API_URL}/work-order-employees?work_order_id=${entry.work_order_id}&employee_id=${entry.employee_id}`;
+    return axios.delete(url, {
       headers: { "Content-Type": "application/json" },
-      data: entries,
-    }
-  );
-  return response.data;
+    });
+  });
+
+const results = await Promise.allSettled(promises);
+const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+return { successes, errors };
 }
 
 export async function getEmployeeNameOptions() {
