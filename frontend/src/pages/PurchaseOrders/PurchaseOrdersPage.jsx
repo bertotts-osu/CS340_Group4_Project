@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   getPurchaseOrdersWithEmployeeNames,
-  getEmployeeNameOptions,
-  getWorkOrderOptions,
   createPurchaseOrder,
   updatePurchaseOrders,
   deletePurchaseOrders,
 } from "./PurchaseOrdersAPI.js";
+import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
+import { getWorkOrderOptions } from "../WorkOrders/WorkOrdersAPI.js";
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 

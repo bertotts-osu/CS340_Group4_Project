@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -35,10 +36,16 @@ public class EmployeeRepository {
         return jdbcClient.sql(sql).query(rowMapper).list();
     }
 
+//    public Employee getById(int last_name) {
+//        String sql = "SELECT * FROM Employees WHERE last_name = :last_name;";
+//        return jdbcClient.sql(sql).param("last_name", last_name).query(rowMapper).single();
+//    }
+
     public Employee getById(int employee_id) {
         String sql = "SELECT * FROM Employees WHERE employee_id = :employee_id;";
         return jdbcClient.sql(sql).param("employee_id", employee_id).query(rowMapper).single();
     }
+
 
     public int insert(Employee employee) {
         String sql = """
@@ -55,5 +62,31 @@ public class EmployeeRepository {
                 .param("skill_level", employee.getSkill_level().toString())
                 .update(keyHolder);
         return keyHolder.getKey().intValue();
+    }
+
+    public void update(Employee employee) {
+        String sql = """
+                UPDATE Employees
+                SET first_name = :first_name, last_name = :last_name, email = :email, phone_number = :phone_number, status = :status
+                WHERE employee_id = :employee_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("employee_id", employee.getEmployee_id())
+                .param("first_name", employee.getFirst_name())
+                .param("last_name", employee.getLast_name())
+                .param("email", employee.getEmail())
+                .param("phone_number", employee.getPhone_number())
+                .param("status", employee.getStatus().toString())
+                .update();
+    }
+
+    public void delete(int employee_id) {
+        String sql = """
+                DELETE FROM Employees
+                WHERE employee_id = :employee_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("employee_id", employee_id)
+                .update();
     }
 }

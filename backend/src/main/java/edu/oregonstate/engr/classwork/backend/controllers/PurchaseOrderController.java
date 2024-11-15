@@ -3,7 +3,6 @@ package edu.oregonstate.engr.classwork.backend.controllers;
 import edu.oregonstate.engr.classwork.backend.models.PurchaseOrder;
 import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/purchase-orders")
-@CrossOrigin(origins = "*") // enables requests to be sent from any origin
+@CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class PurchaseOrderController {
 
     private final PurchaseOrderService purchaseOrderService;
@@ -24,9 +23,7 @@ public class PurchaseOrderController {
     @GetMapping
     public ResponseEntity<List<PurchaseOrder>> getAllPurchaseOrders() {
         List<PurchaseOrder> purchaseOrders = purchaseOrderService.getAllPurchaseOrders();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(purchaseOrders);
+        return ResponseEntity.ok(purchaseOrders);
     }
 
     @PostMapping

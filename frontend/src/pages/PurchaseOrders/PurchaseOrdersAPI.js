@@ -1,46 +1,75 @@
 import axios from "axios";
+import { HEADERS } from "../config.js";
+import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
+
+const path = "/purchase-orders";
 
 export async function getPurchaseOrders() {
   const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/purchase-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    { headers:  HEADERS}
   );
   return response.data;
 }
 
-export async function createPurchaseOrder(formData) {
+export async function createPurchaseOrder(entry) {
+  const employees = await getEmployeeNameOptions();
+
+  // Generate an employee name/id map
+  const employeeMap = employees.reduce((acc, employee) => {
+    acc[employee.display] = employee.value;
+    return acc;
+  }, {});
+
+  // add employee_id as an attribute and remove employee_name
+  const updatedRow = {
+    ...entry,
+    employee_id: employeeMap[entry.employee_name],
+  };
+  delete updatedRow.employee_name;
+
+  // send the http post request
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/purchase-orders`,
-    formData,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    updatedRow,
+    { headers: { HEADERS } }
   );
   return response.data;
 }
 
 export async function updatePurchaseOrders(changes) {
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/purchase-orders`,
-    changes,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data;
+  const promises = changes.map((row) => {
+    return axios.put(
+      `${import.meta.env.VITE_API_URL}${path}`,
+      row,
+      { headers: HEADERS }
+    );
+  });
+
+  const results = await Promise.allSettled(promises);
+  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  return { successes, errors };
 }
 
 export async function deletePurchaseOrders(entries) {
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_URL}/purchase-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-      data: entries,
-    }
-  );
-  return response.data;
+  const promises = entries.map((entry) => {
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }${path}?purchase_order_id=${entry.purchase_order_id}`;
+    return axios.delete(url, {
+      headers: { HEADERS },
+    });
+  });
+
+  const results = await Promise.allSettled(promises);
+  const successes = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value.data);
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => result.value.data);
+  return { successes, errors };
 }
 
 export async function getPurchaseOrdersWithEmployeeNames() {
@@ -58,36 +87,6 @@ export async function getPurchaseOrdersWithEmployeeNames() {
     return {
       ...row,
       employee_name: employeeMap[row.employee_id] || "Unknown",
-    };
-  });
-}
-
-export async function getEmployeeNameOptions() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/employees`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data.map((employee) => {
-    return {
-      value: employee.employee_id,
-      display: employee.first_name + " " + employee.last_name,
-    };
-  });
-}
-
-export async function getWorkOrderOptions() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/work-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data.map((workOrder) => {
-    return {
-      value: workOrder.work_order_id,
-      display: workOrder.work_order_id,
     };
   });
 }

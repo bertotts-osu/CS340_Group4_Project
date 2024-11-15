@@ -263,7 +263,7 @@ Handle Form Events
             Object.entries(rowObject).filter(([key]) => key !== "id")
           );
         });
-        mode === "add" ? createObject(changes) : editObject(changes);
+        mode === "add" ? createObject(changes[0]) : editObject(changes); //only 1 object can be created at a time
         setSelectedRows([]);
         setMode("display");
       }
