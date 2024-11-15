@@ -59,4 +59,31 @@ public class PurchaseOrderItemRepository {
                 .update(keyHolder);
         return keyHolder.getKey().intValue();
     }
+
+    public void update(PurchaseOrderItem purchaseOrderItem) {
+        String sql = """
+                UPDATE PurchaseOrderItems
+                SET unit_cost = :unit_cost, quantity = :quantity, estimated_delivery_date = :estimated_delivery_date, delivery_type = :delivery_type, purchase_order_id = :purchase_order_id, material_id = :material_id
+                WHERE purchase_order_item_id = :purchase_order_item_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("unit_cost", purchaseOrderItem.getUnit_cost())
+                .param("quantity", purchaseOrderItem.getQuantity())
+                .param("estimated_delivery_date", purchaseOrderItem.getEstimated_delivery_date())
+                .param("delivery_type", purchaseOrderItem.getDelivery_type().toString())
+                .param("purchase_order_id", purchaseOrderItem.getPurchase_order_id())
+                .param("material_id", purchaseOrderItem.getMaterial_id())
+                .param("purchase_order_item_id", purchaseOrderItem.getPurchase_order_item_id())
+                .update();
+    }
+
+    public void delete(int purchase_order_item_id) {
+        String sql = """
+                DELETE FROM PurchaseOrderItems
+                WHERE purchase_order_item_id = :purchase_order_item_id;
+                """;
+        jdbcClient.sql(sql)
+                .param("purchase_order_item_id", purchase_order_item_id)
+                .update();
+    }
 }

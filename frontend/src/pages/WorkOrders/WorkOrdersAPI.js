@@ -1,47 +1,58 @@
 import axios from "axios";
+import { HEADERS } from "../config.js";
+
+const path = "/work-orders";
 
 export async function getWorkOrders() {
   const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/work-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    { headers:  HEADERS}
   );
   return response.data;
 }
 
-export async function createWorkOrder(formData) {
+export async function createWorkOrder(entry) {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/work-orders`,
-    formData,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    entry,
+    { headers: { HEADERS } }
   );
   return response.data;
 }
 
 export async function updateWorkOrders(changes) {
+  const promises = changes.map((row) => {
+    return axios.put(
+      `${import.meta.env.VITE_API_URL}${path}`,
+      row,
+      { headers: HEADERS }
+    );
+  });
 
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/work-orders`,
-    changes,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data;
+  const results = await Promise.allSettled(promises);
+  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  return { successes, errors };
 }
 
 export async function deleteWorkOrders(entries) {
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_URL}/work-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-      data: entries,
-    }
-  );
-  return response.data;
+  const promises = entries.map((entry) => {
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }${path}?work_order_id=${entry.work_order_id}`;
+    return axios.delete(url, {
+      headers: { HEADERS },
+    });
+  });
+
+  const results = await Promise.allSettled(promises);
+  const successes = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value.data);
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => result.value.data);
+  return { successes, errors };
 }
 
 export async function getWorkOrderOptions() {

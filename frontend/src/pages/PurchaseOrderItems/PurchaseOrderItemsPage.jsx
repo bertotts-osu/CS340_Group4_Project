@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   getPurchaseOrderItemsWithMaterialNames,
-  getPurchaseOrderOptions,
-  getMaterialOptions,
   createPurchaseOrderItem,
   updatePurchaseOrderItems,
   deletePurchaseOrderItems,
 } from "./PurchaseOrderItemsAPI.js";
+import { getPurchaseOrderOptions } from "../PurchaseOrders/PurchaseOrdersAPI.js";
+import { getMaterialOptions } from "../Materials/MaterialsAPI.js";
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
 

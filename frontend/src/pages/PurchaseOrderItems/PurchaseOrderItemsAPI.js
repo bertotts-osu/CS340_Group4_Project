@@ -1,77 +1,75 @@
 import axios from "axios";
+import { HEADERS } from "../config.js";
+import { getMaterialOptions } from "../Materials/MaterialsAPI.js";
+
+const path = "/purchase-order-items";
 
 export async function getPurchaseOrderItems() {
   const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    { headers:  HEADERS}
   );
   return response.data;
 }
 
-export async function createPurchaseOrderItem(formData) {
+export async function createPurchaseOrderItem(entry) {
+  const materials = await getMaterialOptions();
+
+  // generate material id/name map
+  const materialMap = materials.reduce((acc, material) => {
+    acc[material.display] = material.value;
+    return acc;
+  }, {});
+
+    // add material_id as an attribute and remove material_name
+    const updatedRow = {
+      ...entry,
+      material_id: materialMap[entry.material_name],
+    };
+    delete updatedRow.material_name;
+
+  // send the http post request
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
-    formData,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    updatedRow,
+    { headers: { HEADERS } }
   );
   return response.data;
 }
 
 export async function updatePurchaseOrderItems(changes) {
+  const promises = changes.map((row) => {
+    return axios.put(
+      `${import.meta.env.VITE_API_URL}${path}`,
+      row,
+      { headers: HEADERS }
+    );
+  });
 
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
-    changes,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data;
+  const results = await Promise.allSettled(promises);
+  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  return { successes, errors };
 }
 
 export async function deletePurchaseOrderItems(entries) {
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_URL}/purchase-order-items`,
-    {
-      headers: { "Content-Type": "application/json" },
-      data: entries,
-    }
-  );
-  return response.data;
-}
-
-export async function getMaterialOptions() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/materials`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data.map((material) => {
-    return {
-      value: material.material_id,
-      display: material.name,
-    };
+  const promises = entries.map((entry) => {
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }${path}?purchase_order_item_id=${entry.purchase_order_item_id}`;
+    return axios.delete(url, {
+      headers: { HEADERS },
+    });
   });
-}
 
-export async function getPurchaseOrderOptions() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/purchase-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data.map((purchaseOrder) => {
-    return {
-      value: purchaseOrder.purchase_order_id,
-      display: purchaseOrder.purchase_order_id,
-    };
-  });
+  const results = await Promise.allSettled(promises);
+  const successes = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value.data);
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => result.value.data);
+  return { successes, errors };
 }
 
 export async function getPurchaseOrderItemsWithMaterialNames() {

@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/work-orders")
-@CrossOrigin(origins = "*") // enables requests to be sent from any origin
+@CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class WorkOrderController {
 
     private final WorkOrderService workOrderService;
@@ -34,5 +34,17 @@ public class WorkOrderController {
     public ResponseEntity<WorkOrder> createWorkOrder(@Validated @RequestBody WorkOrder workOrder) {
         WorkOrder createdWorkOrder = workOrderService.createWorkOrder(workOrder);
         return ResponseEntity.ok(createdWorkOrder);
+    }
+
+    @PutMapping
+    public ResponseEntity<WorkOrder> updateWorkOrder(@RequestBody WorkOrder workOrder) {
+        WorkOrder updatedWorkOrder = workOrderService.updateWorkOrder(workOrder);
+        return ResponseEntity.ok(updatedWorkOrder);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteWorkOrder(@RequestParam int work_order_id) {
+        workOrderService.deleteWorkOrder(work_order_id);
+        return ResponseEntity.noContent().build();
     }
 }

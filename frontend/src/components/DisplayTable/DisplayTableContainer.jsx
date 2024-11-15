@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
 import DisplayTable from "../DisplayTable/DisplayTable.jsx";
@@ -112,9 +112,8 @@ Manage API Requests
 Handle Table Events
 */
   // Selects/Deselects all rows based on the header checkbox
-  const handleSelectAllRows = useCallback(() => {
+  const handleSelectAllRows = () => {
     setResultMessage(false);
-    // useCallback using memoization to reduce rerenders
     if (mode !== "add") {
       if (!allSelected) {
         setAllSelected(true);
@@ -124,7 +123,7 @@ Handle Table Events
         setSelectedRows([]);
       }
     }
-  });
+  };
 
   // Select/Unselect a row when the row's checkbox is checked
   const handleSelectRow = (id) => {
