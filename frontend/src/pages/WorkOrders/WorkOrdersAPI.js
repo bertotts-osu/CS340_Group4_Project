@@ -47,9 +47,7 @@ export async function deleteWorkOrders(entries) {
 export async function getWorkOrderOptions() {
   const response = await axios.get(
     `${import.meta.env.VITE_API_URL}/work-orders`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    {headers: { "Content-Type": "application/json" }}
   );
   return response.data.map((workOrder) => {
     return {

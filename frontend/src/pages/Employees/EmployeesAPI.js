@@ -1,55 +1,69 @@
 import axios from "axios";
+import { HEADERS } from "../config.js";
+
+const path = "/employees";
 
 export async function getEmployees() {
   const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/employees`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    { headers: { HEADERS } }
   );
   return response.data;
 }
 
-export async function createEmployee(formData) {
+export async function createEmployee(entry) {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/employees`,
-    formData,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    entry,
+    { headers: { HEADERS } }
   );
   return response.data;
 }
 
 export async function updateEmployees(changes) {
+  const promises = changes.map((row) => {
+    return axios.put(
+      `${import.meta.env.VITE_API_URL}${path}`,
+      row,
+      { headers: HEADERS }
+    );
+  });
 
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/employees`,
-    changes,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data;
+  const results = await Promise.allSettled(promises);
+  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  return { successes, errors };
 }
 
 export async function deleteEmployees(entries) {
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_URL}/employees`,
-    {
-      headers: { "Content-Type": "application/json" },
-      data: entries,
-    }
-  );
-  return response.data;
+  const promises = entries.map((entry) => {
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }${path}?employee_id=${entry.employee_id}`;
+    return axios.delete(url, {
+      headers: { HEADERS },
+    });
+  });
+
+  const results = await Promise.allSettled(promises);
+  const successes = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value.data);
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => result.value.data);
+  return { successes, errors };
 }
 
 export async function getEmployeeNameOptions() {
   const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/employee-names`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
+    `${import.meta.env.VITE_API_URL}${path}`,
+    {headers: { HEADERS } }
   );
-  return response.data;
+  return response.data.map((employee) => {
+    return {
+      value: employee.employee_id,
+      display: employee.first_name + " " + employee.last_name,
+    };
+  });
 }
