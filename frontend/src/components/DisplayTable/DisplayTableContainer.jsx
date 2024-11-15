@@ -58,16 +58,21 @@ Manage API Requests
         setResultMessage("Error: Duplicate entry.");
       } else setResultMessage("Error: An unexpected error occurred");
       setChangedRows([]);
-      setMode("display");
+      setMode("add");
       refetch();
     },
   });
 
   // Update Objects
   const { mutate: editObject } = useMutation(updateAPI, {
-    onSuccess: (editObject) => {
-      console.log("Success:", editObject);
-      setResultMessage("Successfully updated!");
+    onSuccess: ({ successes, errors }) => {
+      console.log("Success:", { successes, errors });
+      if (errors.length > 0) {
+        console.error("Errors:", errors);
+        setResultMessage(`Error: ${errors.length} updates failed.`);
+      } else {
+        setResultMessage("Successfully updated!");
+      }
       setChangedRows([]);
       setMode("display");
       refetch();
@@ -84,9 +89,14 @@ Manage API Requests
 
   // Delete Objects
   const { mutate: deleteObject } = useMutation(deleteAPI, {
-    onSuccess: (deleteObject) => {
-      console.log("Success:", deleteObject);
-      setResultMessage("Successfully deleted!");
+    onSuccess: ({ successes, errors }) => {
+      console.log("Success:", { successes, errors });
+      if (errors.length > 0) {
+        console.error("Errors:", errors);
+        setResultMessage(`Error: ${errors.length} deletions failed.`);
+      } else {
+        setResultMessage("Successfully deleted!");
+      }
       setSelectedRows([]);
       setChangedRows([]);
       refetch();
@@ -263,7 +273,9 @@ Handle Form Events
   const handleCancelButtonPress = (e) => {
     e.preventDefault();
     if (mode === "add") {
-      setTableData((tableData) => tableData.filter((row) => row.id !== tableData.length));
+      setTableData((tableData) =>
+        tableData.filter((row) => row.id !== tableData.length)
+      );
     }
     setSelectedRows([]);
     setMode("display");
@@ -279,7 +291,7 @@ Render the JSX Content
       onSubmit={handleSaveButtonPress}
       noValidate
     >
-      <HeaderLabel text={headerText} className={headerStyle.header}/>
+      <HeaderLabel text={headerText} className={headerStyle.header} />
       <DisplayTable
         data={tableData}
         contentSchema={contentSchema}
