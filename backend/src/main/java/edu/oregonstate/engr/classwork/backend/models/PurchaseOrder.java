@@ -1,5 +1,6 @@
 package edu.oregonstate.engr.classwork.backend.models;
 
+import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -15,4 +16,9 @@ public class PurchaseOrder {
     private int employee_id;
     @Positive
     private Integer work_order_id; //use Integer class to allow null values
+
+    @Data
+    public static class PurchaseOrderWithNames extends PurchaseOrder {
+        private String employee_name;
+    }
 }

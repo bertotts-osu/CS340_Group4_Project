@@ -1,6 +1,7 @@
 package edu.oregonstate.engr.classwork.backend.controllers;
 
 import edu.oregonstate.engr.classwork.backend.models.PurchaseOrderItem;
+import edu.oregonstate.engr.classwork.backend.models.PurchaseOrderItem.PurchaseOrderItemWithNames;
 import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,22 +20,22 @@ public class PurchaseOrderItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseOrderItem>> getAllPurchaseOrderItems() {
-        List<PurchaseOrderItem> purchaseOrderItems = purchaseOrderItemService.getAllPurchaseOrderItems();
+    public ResponseEntity<List<PurchaseOrderItemWithNames>> getAllPurchaseOrderItems() {
+        List<PurchaseOrderItemWithNames> purchaseOrderItems = purchaseOrderItemService.getAllPurchaseOrderItems();
         return ResponseEntity.ok(purchaseOrderItems);
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseOrderItem> createPurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
-        PurchaseOrderItem createdPurchaseOrderItem = purchaseOrderItemService.createPurchaseOrderItem(purchaseOrderItem);
-        return ResponseEntity.ok(createdPurchaseOrderItem);
+    public ResponseEntity<Void> createPurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItemService.createPurchaseOrderItem(purchaseOrderItem);
+        return ResponseEntity.ok().build();
     }
 
 
     @PutMapping
-    public ResponseEntity<PurchaseOrderItem> updatePurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
-        PurchaseOrderItem updatePurchaseOrderItem = purchaseOrderItemService.updatePurchaseOrderItem(purchaseOrderItem);
-        return ResponseEntity.ok(updatePurchaseOrderItem);
+    public ResponseEntity<Void> updatePurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItemService.updatePurchaseOrderItem(purchaseOrderItem);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping

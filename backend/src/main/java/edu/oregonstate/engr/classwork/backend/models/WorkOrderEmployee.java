@@ -14,4 +14,9 @@ public class WorkOrderEmployee {
     private int employee_id;
     @NotNull
     private LocalDateTime assigned_at;
+
+    @Data
+    public static class WorkOrderEmployeeWithNames extends WorkOrderEmployee {
+        private String employee_name;
+    }
 }

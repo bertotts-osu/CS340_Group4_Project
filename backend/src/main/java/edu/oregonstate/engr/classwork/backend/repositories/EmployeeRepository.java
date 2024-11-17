@@ -1,6 +1,7 @@
 package edu.oregonstate.engr.classwork.backend.repositories;
 
 import edu.oregonstate.engr.classwork.backend.models.Employee;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,7 +18,6 @@ public class EmployeeRepository {
 
     public EmployeeRepository(DataSource dataSource) {
         this.jdbcClient = JdbcClient.create(dataSource);
-
         this.rowMapper = (rs, rowNum) -> {
             Employee employee = new Employee();
             employee.setEmployee_id(rs.getInt("employee_id"));
@@ -35,17 +35,6 @@ public class EmployeeRepository {
         String sql = "SELECT * FROM Employees;";
         return jdbcClient.sql(sql).query(rowMapper).list();
     }
-
-//    public Employee getById(int last_name) {
-//        String sql = "SELECT * FROM Employees WHERE last_name = :last_name;";
-//        return jdbcClient.sql(sql).param("last_name", last_name).query(rowMapper).single();
-//    }
-
-    public Employee getById(int employee_id) {
-        String sql = "SELECT * FROM Employees WHERE employee_id = :employee_id;";
-        return jdbcClient.sql(sql).param("employee_id", employee_id).query(rowMapper).single();
-    }
-
 
     public int insert(Employee employee) {
         String sql = """
@@ -70,7 +59,7 @@ public class EmployeeRepository {
                 SET first_name = :first_name, last_name = :last_name, email = :email, phone_number = :phone_number, status = :status
                 WHERE employee_id = :employee_id;
                 """;
-        jdbcClient.sql(sql)
+        int updatedRows = jdbcClient.sql(sql)
                 .param("employee_id", employee.getEmployee_id())
                 .param("first_name", employee.getFirst_name())
                 .param("last_name", employee.getLast_name())
@@ -78,6 +67,7 @@ public class EmployeeRepository {
                 .param("phone_number", employee.getPhone_number())
                 .param("status", employee.getStatus().toString())
                 .update();
+        if (updatedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
     }
 
     public void delete(int employee_id) {

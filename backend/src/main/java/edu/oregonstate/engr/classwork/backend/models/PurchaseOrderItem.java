@@ -28,4 +28,9 @@ public class PurchaseOrderItem {
     private int purchase_order_id;
     @Positive
     private int material_id;
+
+    @Data
+    public static class PurchaseOrderItemWithNames extends PurchaseOrderItem {
+        private String material_name;
+    }
 }
