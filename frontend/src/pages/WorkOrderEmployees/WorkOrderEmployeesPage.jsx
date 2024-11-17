@@ -14,7 +14,7 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const tableSchemaTemplate = [
   {
     name: "work_order_id",
-    label: "Work Order",
+    label: "Work Order ID",
     editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
@@ -27,7 +27,7 @@ const tableSchemaTemplate = [
   },
   {
     name: "employee_name",
-    label: "Employee Name",
+    label: "Employee",
     editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
@@ -36,7 +36,7 @@ const tableSchemaTemplate = [
   },
   {
     name: "assigned_at",
-    label: "Assigned",
+    label: "Assigned At",
     editType: "datetime-local",
     addType: "datetime-local",
     required: true,

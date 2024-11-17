@@ -1,6 +1,7 @@
 package edu.oregonstate.engr.classwork.backend.services;
 
 import edu.oregonstate.engr.classwork.backend.models.WorkOrderEmployee;
+import edu.oregonstate.engr.classwork.backend.models.WorkOrderEmployee.WorkOrderEmployeeWithNames;
 import edu.oregonstate.engr.classwork.backend.repositories.WorkOrderEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,23 +12,20 @@ import java.util.List;
 public class WorkOrderEmployeeService {
     private final WorkOrderEmployeeRepository workOrderEmployeeRepository;
 
-    @Autowired
     public WorkOrderEmployeeService(WorkOrderEmployeeRepository workOrderEmployeeRepository) {
         this.workOrderEmployeeRepository = workOrderEmployeeRepository;
     }
 
-    public List<WorkOrderEmployee> getAllWorkOrderEmployees() {
+    public List<WorkOrderEmployeeWithNames> getAllWorkOrderEmployees() {
         return workOrderEmployeeRepository.getAll();
     }
 
-    public WorkOrderEmployee createWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
+    public void createWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
         workOrderEmployeeRepository.insert(workOrderEmployee);
-        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 
-    public WorkOrderEmployee updateWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
+    public void updateWorkOrderEmployee(WorkOrderEmployee workOrderEmployee) {
         workOrderEmployeeRepository.update(workOrderEmployee);
-        return workOrderEmployeeRepository.getByIds(workOrderEmployee.getWork_order_id(), workOrderEmployee.getEmployee_id());
     }
 
     public void deleteWorkOrderEmployee(int work_order_id, int employee_id) {

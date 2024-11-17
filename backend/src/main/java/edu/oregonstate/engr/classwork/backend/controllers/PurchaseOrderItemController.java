@@ -1,48 +1,41 @@
 package edu.oregonstate.engr.classwork.backend.controllers;
 
 import edu.oregonstate.engr.classwork.backend.models.PurchaseOrderItem;
+import edu.oregonstate.engr.classwork.backend.models.PurchaseOrderItem.PurchaseOrderItemWithNames;
 import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderItemService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController//combines Controller + ResponseBody annotations
 @RequestMapping("/purchase-order-items")
-@CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
+@CrossOrigin(origins = {"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class PurchaseOrderItemController {
-
     private final PurchaseOrderItemService purchaseOrderItemService;
 
-    @Autowired // constructor injection
     public PurchaseOrderItemController(PurchaseOrderItemService purchaseOrderItemService) {
         this.purchaseOrderItemService = purchaseOrderItemService;
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseOrderItem>> getAllPurchaseOrderItems() {
-        List<PurchaseOrderItem> purchaseOrders = purchaseOrderItemService.getAllPurchaseOrderItems();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(purchaseOrders);
+    public ResponseEntity<List<PurchaseOrderItemWithNames>> getAllPurchaseOrderItems() {
+        List<PurchaseOrderItemWithNames> purchaseOrderItems = purchaseOrderItemService.getAllPurchaseOrderItems();
+        return ResponseEntity.ok(purchaseOrderItems);
     }
 
-//    @PostMapping
-//    public ResponseEntity<PurchaseOrderItem> createPurchaseOrderItem(@RequestBody PurchaseOrderItem purchaseOrderItem) {
-//        PurchaseOrderItem createdPurchaseOrderItem = purchaseOrderItemService.createPurchaseOrderItem(purchaseOrderItem);
-//        return ResponseEntity.ok(createdPurchaseOrderItem);
-//    }
-
-    @PostMapping public ResponseEntity<PurchaseOrderItem> createPurchaseOrderItem(@RequestBody PurchaseOrderItem purchaseOrderItem) { try { PurchaseOrderItem createdPurchaseOrderItem = purchaseOrderItemService.createPurchaseOrderItem(purchaseOrderItem); return ResponseEntity.ok(createdPurchaseOrderItem); } catch (Exception e) {  e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); } }
+    @PostMapping
+    public ResponseEntity<Void> createPurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItemService.createPurchaseOrderItem(purchaseOrderItem);
+        return ResponseEntity.ok().build();
+    }
 
 
     @PutMapping
-    public ResponseEntity<PurchaseOrderItem> updatePurchaseOrderItem(@RequestBody PurchaseOrderItem purchaseOrderItem) {
-        PurchaseOrderItem updatedPurchaseOrder = purchaseOrderItemService.updatePurchaseOrderItem(purchaseOrderItem);
-        return ResponseEntity.ok(updatedPurchaseOrder);
+    public ResponseEntity<Void> updatePurchaseOrderItem(@Validated @RequestBody PurchaseOrderItem purchaseOrderItem) {
+        purchaseOrderItemService.updatePurchaseOrderItem(purchaseOrderItem);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping

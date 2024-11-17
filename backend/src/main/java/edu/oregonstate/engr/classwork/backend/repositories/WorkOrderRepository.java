@@ -1,6 +1,7 @@
 package edu.oregonstate.engr.classwork.backend.repositories;
 
 import edu.oregonstate.engr.classwork.backend.models.WorkOrder;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,7 +19,6 @@ public class WorkOrderRepository {
 
     public WorkOrderRepository(DataSource dataSource) {
         this.jdbcClient = JdbcClient.create(dataSource);
-
         this.rowMapper = (rs, rowNum) -> {
             WorkOrder workOrder = new WorkOrder();
             workOrder.setWork_order_id(rs.getInt("work_order_id"));
@@ -42,11 +42,6 @@ public class WorkOrderRepository {
     public List<WorkOrder> getAll() {
         String sql = "SELECT * FROM WorkOrders;";
         return jdbcClient.sql(sql).query(rowMapper).list();
-    }
-
-    public WorkOrder getById(int work_order_id) {
-        String sql = "SELECT * FROM WorkOrders WHERE work_order_id = :work_order_id;";
-        return jdbcClient.sql(sql).param("work_order_id", work_order_id).query(rowMapper).single();
     }
 
     public int insert(WorkOrder workOrder) {
@@ -73,7 +68,7 @@ public class WorkOrderRepository {
         return keyHolder.getKey().intValue();
     }
 
-    public int update(WorkOrder workOrder) {
+    public void update(WorkOrder workOrder) {
         String sql = """
             UPDATE WorkOrders
             SET size = :size, street = :street, city = :city, state = :state, zip = :zip, stage = :stage,
@@ -81,7 +76,7 @@ public class WorkOrderRepository {
                 started_at = :started_at, completed_at = :completed_at, on_hold_at = :on_hold_at, canceled_at = :canceled_at
             WHERE work_order_id = :work_order_id;
             """;
-        return jdbcClient.sql(sql)
+        int updatedRows = jdbcClient.sql(sql)
                 .param("size", workOrder.getSize().toString())
                 .param("street", workOrder.getStreet())
                 .param("city", workOrder.getCity())
@@ -97,6 +92,7 @@ public class WorkOrderRepository {
                 .param("canceled_at", workOrder.getCanceled_at(), Types.TIMESTAMP)
                 .param("work_order_id", workOrder.getWork_order_id())
                 .update();
+        if (updatedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
     }
 
     public void delete(int work_order_id) {

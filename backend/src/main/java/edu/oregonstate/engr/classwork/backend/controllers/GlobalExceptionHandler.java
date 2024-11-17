@@ -14,29 +14,6 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler
-    public ProblemDetail handleAllNonSpring(Exception ex) {
-        return ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler
-    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid Entry state");
-    }
-
-    @ExceptionHandler
-    public ProblemDetail handleDuplicateKey(DuplicateKeyException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Entry already exists");
-    }
-
-    @ExceptionHandler
-    public ProblemDetail handleIncorrectResultSize(IncorrectResultSizeDataAccessException ex) {
-        if (ex.getExpectedSize() == 1 && ex.getActualSize() == 0) {
-            return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Entry doesn't exist");
-        }
-        throw ex;
-    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ResponseEntity<Object> responseEntity = super.handleMethodArgumentNotValid(ex, headers, status, request);
@@ -47,5 +24,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             problemDetail.setProperty("field_errors", fieldErrors);
         }
         return responseEntity;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleIncorrectResultSize(IncorrectResultSizeDataAccessException ex) {
+        if (ex.getExpectedSize() == 1 && ex.getActualSize() == 0) {
+            return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Entity doesn't exist");
+        }
+        throw ex;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid Entity state");
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleDuplicateKey(DuplicateKeyException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Entity already exists");
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleAllOthers(Exception ex) {
+        return ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

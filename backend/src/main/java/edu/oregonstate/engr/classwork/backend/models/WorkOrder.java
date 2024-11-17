@@ -2,6 +2,7 @@ package edu.oregonstate.engr.classwork.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,13 +21,17 @@ public class WorkOrder {
     private int work_order_id;
     @NotNull
     private Size size;
-    @NotNull @jakarta.validation.constraints.Size(min = 1, max = 255)
+    @NotNull
+    @jakarta.validation.constraints.Size(min = 1, max = 255)
     private String street;
-    @NotNull @jakarta.validation.constraints.Size(min = 1, max = 255)
+    @NotNull
+    @jakarta.validation.constraints.Size(min = 1, max = 255)
     private String city;
-    @NotNull @jakarta.validation.constraints.Pattern(regexp = "[A-Z][A-Z]", message = "invalid format (ex. CA, NY)")
+    @NotNull
+    @Pattern(regexp = "[A-Z][A-Z]", message = "invalid format (ex. CA, NY)")
     private String state;
-    @NotNull @jakarta.validation.constraints.Pattern(regexp = "[0-9]{5}", message = "invalid format (ex. 12345, 98765)")
+    @NotNull
+    @Pattern(regexp = "[0-9]{5}", message = "invalid format (ex. 12345, 98765)")
     private String zip;
     @NotNull
     private Stage stage;
