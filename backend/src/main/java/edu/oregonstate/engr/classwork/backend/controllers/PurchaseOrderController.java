@@ -4,6 +4,7 @@ import edu.oregonstate.engr.classwork.backend.models.PurchaseOrder;
 import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +13,8 @@ import java.util.List;
 @RequestMapping("/purchase-orders")
 @CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class PurchaseOrderController {
-
     private final PurchaseOrderService purchaseOrderService;
 
-    @Autowired // constructor injection
     public PurchaseOrderController(PurchaseOrderService purchaseOrderService) {
         this.purchaseOrderService = purchaseOrderService;
     }
@@ -27,13 +26,13 @@ public class PurchaseOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
+    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@Validated @RequestBody PurchaseOrder purchaseOrder) {
         PurchaseOrder createdPurchaseOrder = purchaseOrderService.createPurchaseOrder(purchaseOrder);
         return ResponseEntity.ok(createdPurchaseOrder);
     }
 
     @PutMapping
-    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
+    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@Validated @RequestBody PurchaseOrder purchaseOrder) {
         PurchaseOrder updatedPurchaseOrder = purchaseOrderService.updatePurchaseOrder(purchaseOrder);
         return ResponseEntity.ok(updatedPurchaseOrder);
     }

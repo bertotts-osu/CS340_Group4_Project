@@ -14,10 +14,8 @@ import java.util.List;
 @RequestMapping("/work-orders")
 @CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class WorkOrderController {
-
     private final WorkOrderService workOrderService;
 
-    @Autowired // constructor injection
     public WorkOrderController(WorkOrderService workOrderService) {
         this.workOrderService = workOrderService;
     }
@@ -25,9 +23,7 @@ public class WorkOrderController {
     @GetMapping
     public ResponseEntity<List<WorkOrder>> getAllWorkOrders() {
         List<WorkOrder> workOrders = workOrderService.getAllWorkOrders();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(workOrders);
+        return ResponseEntity.ok(workOrders);
     }
 
     @PostMapping

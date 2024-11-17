@@ -13,10 +13,8 @@ import java.util.List;
 @RequestMapping("/work-order-employees")
 @CrossOrigin(origins={"http://classwork.engr.oregonstate.edu:14571", "http://localhost:14571"})
 public class WorkOrderEmployeeController {
-
     private final WorkOrderEmployeeService workOrderEmployeeService;
 
-    @Autowired // constructor injection
     public WorkOrderEmployeeController(WorkOrderEmployeeService workOrderEmployeeService) {
         this.workOrderEmployeeService = workOrderEmployeeService;
     }
