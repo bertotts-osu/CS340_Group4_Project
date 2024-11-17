@@ -3,7 +3,6 @@ package edu.oregonstate.engr.classwork.backend.controllers;
 import edu.oregonstate.engr.classwork.backend.models.WorkOrderEmployee;
 import edu.oregonstate.engr.classwork.backend.models.WorkOrderEmployee.WorkOrderEmployeeWithNames;
 import edu.oregonstate.engr.classwork.backend.services.WorkOrderEmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

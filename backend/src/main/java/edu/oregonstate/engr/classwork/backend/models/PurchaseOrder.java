@@ -1,6 +1,5 @@
 package edu.oregonstate.engr.classwork.backend.models;
 
-import edu.oregonstate.engr.classwork.backend.services.PurchaseOrderService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
