@@ -88,8 +88,7 @@ VALUES (:unit_cost, :quantity, :estimated_delivery_date, :delivery_type, :purcha
 
 -- Update a PurchaseOrderItem.
 UPDATE PurchaseOrderItems
-SET
-    unit_cost = :unit_cost, quantity = :quantity, estimated_delivery_date = :estimated_delivery_date,
+SET unit_cost = :unit_cost, quantity = :quantity, estimated_delivery_date = :estimated_delivery_date,
     delivery_type = :delivery_type, purchase_order_id = :purchase_order_id, material_id = :material_id
 WHERE purchase_order_item_id = :purchase_order_item_id;
 
