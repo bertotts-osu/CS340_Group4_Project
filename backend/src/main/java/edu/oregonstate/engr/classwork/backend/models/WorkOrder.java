@@ -1,6 +1,7 @@
 package edu.oregonstate.engr.classwork.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -9,6 +10,11 @@ import java.time.LocalDateTime;
 
 @Data //automatically generates getters and setters
 public class WorkOrder {
+    public enum State {
+        AL, AK, AZ, AR, CA, CO, CT, DE, DC, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MT, NE, NV, NH, NJ, NM, NY, NC,
+        ND, OH, OK, OR, MD, MA, MI, MN, MS, MO, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
+    }
+
     public enum Size {
         Small, Medium, Large;
     }
@@ -21,16 +27,15 @@ public class WorkOrder {
     private int work_order_id;
     @NotNull
     private Size size;
-    @NotNull
-    @jakarta.validation.constraints.Size(min = 1, max = 255)
+    @NotBlank
+    @jakarta.validation.constraints.Size(max = 255)
     private String street;
-    @NotNull
-    @jakarta.validation.constraints.Size(min = 1, max = 255)
+    @NotBlank
+    @jakarta.validation.constraints.Size(max = 255)
     private String city;
     @NotNull
-    @Pattern(regexp = "[A-Z][A-Z]", message = "invalid format (ex. CA, NY)")
-    private String state;
-    @NotNull
+    private State state;
+    @NotBlank
     @Pattern(regexp = "[0-9]{5}", message = "invalid format (ex. 12345, 98765)")
     private String zip;
     @NotNull
