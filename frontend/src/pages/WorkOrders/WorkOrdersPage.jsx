@@ -55,6 +55,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
+      pattern: "[\\w\\s.,'-]+",
     },
     { 
       name: "city",
@@ -63,6 +64,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
+      pattern: "[A-Z]{1}[a-z]+",
     },
     { 
       name: "state",
@@ -71,6 +73,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
+      pattern: "[A-Z]{2}",
     },
     { 
       name: "zip",
@@ -79,6 +82,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
+      pattern: "\\d{5}",
     },
     {
       name: "applied_at",

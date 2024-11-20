@@ -42,7 +42,7 @@ const tableSchemaTemplate = [
   },
   {
     name: "work_order_id",
-    label: "Work Order ID",
+    label: "Work Order",
     editType: "dropdown",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
@@ -76,7 +76,7 @@ const { data: workOrderOptions } = useQuery({
       setContentSchema( contentSchema =>
         contentSchema.map((field) => {
           if (field.fetchOptions) {
-            if (field.label === "Employee Name") {
+            if (field.label === "Employee") {
               return { ...field, options: employeeNameOptions };
             } else if (field.label === "Work Order") {
               return { ...field, options: workOrderOptions };

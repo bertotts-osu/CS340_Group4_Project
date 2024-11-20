@@ -22,6 +22,7 @@ const tableSchemaTemplate = [
     addType: "text",
     required: true,
     invalid: false,
+    pattern: "[A-Z]{1}[a-z]+",
   },
   {
     name: "last_name",
@@ -30,6 +31,7 @@ const tableSchemaTemplate = [
     addType: "text",
     required: true,
     invalid: false,
+    pattern: "[A-Z]{1}[a-z]+",
   },
   {
     name: "email",
