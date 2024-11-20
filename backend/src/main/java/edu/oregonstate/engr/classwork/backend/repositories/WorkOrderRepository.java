@@ -25,7 +25,7 @@ public class WorkOrderRepository {
             workOrder.setSize(WorkOrder.Size.valueOf(rs.getString("size")));
             workOrder.setStreet(rs.getString("street"));
             workOrder.setCity(rs.getString("city"));
-            workOrder.setState(rs.getString("state"));
+            workOrder.setState(WorkOrder.State.valueOf(rs.getString("state")));
             workOrder.setZip(rs.getString("zip"));
             workOrder.setStage(WorkOrder.Stage.valueOf(rs.getString("stage").replace(" ", "_")));
             workOrder.setApplied_at(rs.getObject("applied_at", LocalDateTime.class));
@@ -54,7 +54,7 @@ public class WorkOrderRepository {
                 .param("size", workOrder.getSize().toString())
                 .param("street", workOrder.getStreet())
                 .param("city", workOrder.getCity())
-                .param("state", workOrder.getState())
+                .param("state", workOrder.getState().toString())
                 .param("zip", workOrder.getZip())
                 .param("stage", workOrder.getStage().toString().replace("_", " "))
                 .param("applied_at", workOrder.getApplied_at(), Types.TIMESTAMP)
@@ -80,7 +80,7 @@ public class WorkOrderRepository {
                 .param("size", workOrder.getSize().toString())
                 .param("street", workOrder.getStreet())
                 .param("city", workOrder.getCity())
-                .param("state", workOrder.getState())
+                .param("state", workOrder.getState().toString())
                 .param("zip", workOrder.getZip())
                 .param("stage", workOrder.getStage().toString().replace("_", " "))
                 .param("applied_at", workOrder.getApplied_at(), Types.TIMESTAMP)
