@@ -165,8 +165,9 @@ export default function DisplayTable({
         </table>
       </div>
     );
+  } else {
+    return <div>No data available</div>;
   }
-  return <div>No data available</div>;
 }
 
 DisplayTable.propTypes = {

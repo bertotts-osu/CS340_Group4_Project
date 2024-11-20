@@ -48,7 +48,9 @@ export async function updateWorkOrderEmployees(changes) {
 
   const results = await Promise.allSettled(promises);
   const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
-  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason.response); 
+  console.log(`Sucess Results =${JSON.stringify(successes)}`);
+  console.log(`Error Results =${JSON.stringify(errors)}`);
   return { successes, errors };
 }
 

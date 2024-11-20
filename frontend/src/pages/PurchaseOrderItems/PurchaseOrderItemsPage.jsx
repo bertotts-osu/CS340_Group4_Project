@@ -14,7 +14,7 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const tableSchemaTemplate = [
   {
     name: "purchase_order_item_id",
-    label: "Purchase Order Item ID",
+    label: "Purchase Order Item",
     editType: "display",
     addType: "display",
   },
@@ -54,7 +54,7 @@ const tableSchemaTemplate = [
   },
   {
     name: "purchase_order_id",
-    label: "Purchase Order ID",
+    label: "Purchase Order",
     editType: "dropdown",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API

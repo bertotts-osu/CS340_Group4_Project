@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
 import DisplayTable from "../DisplayTable/DisplayTable.jsx";
@@ -7,7 +7,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import styles from "./DisplayTableContainer.module.css";
 import headerStyle from "../HeaderLabel/HeaderLabel.module.css";
 
-export default function DisplayTableContainer({
+const DisplayTableContainer = memo(function DisplayTableContainer({
   headerText,
   contentSchema,
   fetchAPI,
@@ -33,16 +33,21 @@ Declare State Variables
 Manage API Requests
 */
   // Fetch Table Data
-  const { data, refetch } = useQuery({
-    queryKey: ["fetchData"],
+  const {
+    data: dbData,
+    isLoading: isLoadingDBData,
+    isError: isErrorDBData,
+    refetch,
+  } = useQuery({
+    queryKey: [headerText],
     queryFn: fetchAPI,
   });
 
   useEffect(() => {
-    if (data) {
-      setTableData(data);
+    if (dbData) {
+      setTableData(dbData);
     }
-  }, [data]);
+  }, [dbData]);
 
   // Create New Object
   const { mutate: createObject } = useMutation(createAPI, {
@@ -181,22 +186,22 @@ Modify the Table Data For Display
 */
   // Add row numbers to the table data
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (dbData && dbData.length > 0) {
       let index = 0;
-      const updatedData = data.map((row) => {
+      const updatedData = dbData.map((row) => {
         index += 1;
         return { id: index, ...row };
       });
       setTableData(updatedData);
       setInitialData(updatedData);
     }
-  }, [data]);
+  }, [dbData]);
 
   /*
 Handle Form Events
 */
 
-  const handleAddButtonPress = (e) => {
+  const handleAddButtonPress = useCallback((e) => {
     e.preventDefault();
     setSelectedRows([]);
     const newRow = contentSchema.reduce(
@@ -213,17 +218,17 @@ Handle Form Events
     setInitialData([...initialData, newRow]);
     setMode("add");
     setResultMessage(false);
-  };
+  }, [contentSchema, initialData, tableData]);
 
-  const handleEditButtonPress = (e) => {
+  const handleEditButtonPress = useCallback((e) => {
     e.preventDefault();
     if (selectedRows.length > 0) {
       setMode("edit");
       setResultMessage(false);
     }
-  };
+  }, [selectedRows.length]);
 
-  const handleDeleteButtonPress = (e) => {
+  const handleDeleteButtonPress = useCallback((e) => {
     e.preventDefault();
     if (selectedRows.length > 0) {
       const objects2delete = selectedRows.map((row) => {
@@ -237,9 +242,9 @@ Handle Form Events
       });
       deleteObject(objects2delete);
     }
-  };
+  }, [deleteObject, selectedRows, tableData]);
 
-  const handleSaveButtonPress = (e) => {
+  const handleSaveButtonPress = useCallback((e) => {
     e.preventDefault();
     const form = e.target.closest("form");
     const invalidFields = form.querySelectorAll(":invalid");
@@ -267,9 +272,9 @@ Handle Form Events
         setMode("display");
       }
     }
-  };
+  }, [changedRows, contentSchema, createObject, editObject, mode, tableData]);
 
-  const handleCancelButtonPress = (e) => {
+  const handleCancelButtonPress = useCallback((e) => {
     e.preventDefault();
     if (mode === "add") {
       setTableData((tableData) =>
@@ -279,43 +284,57 @@ Handle Form Events
     setSelectedRows([]);
     setMode("display");
     setResultMessage(false);
-  };
+  }, [mode]);
+
+  /*
+Ensure the data is fetched before displaying the table
+*/
+  if (isLoadingDBData) {
+    return <div className={headerStyle.header}>Getting data...</div>;
+  } else if (isErrorDBData) {
+    return <div className={headerStyle.header}>Error getting data from the database.</div>;
+  }
 
   /*
 Render the JSX Content
 */
-  return (
-    <form
-      className={styles.form_container}
-      onSubmit={handleSaveButtonPress}
-      noValidate
-    >
-      <HeaderLabel text={headerText} className={headerStyle.header} />
-      <DisplayTable
-        data={tableData}
-        contentSchema={contentSchema}
-        selectedRows={selectedRows}
-        mode={mode}
-        onRowChange={handleRowChange}
-        onSelectRow={handleSelectRow}
-        onSelectAllRows={handleSelectAllRows}
-      />
-      {resultMessage && resultMessage.includes("Error:") ? (
-        <div className={styles.msgError}>{resultMessage}</div>
-      ) : (
-        <div className={styles.msgSuccess}>{resultMessage}</div>
-      )}
-      <DisplayTableButtons
-        mode={mode}
-        onAdd={handleAddButtonPress}
-        onEdit={handleEditButtonPress}
-        onDelete={handleDeleteButtonPress}
-        onSave={handleSaveButtonPress}
-        onCancel={handleCancelButtonPress}
-      />
-    </form>
-  );
-}
+
+  if (tableData && tableData.length > 0) {
+    return (
+      <form
+        className={styles.form_container}
+        onSubmit={handleSaveButtonPress}
+        noValidate
+      >
+        <HeaderLabel text={headerText} className={headerStyle.header} />
+        <DisplayTable
+          data={tableData}
+          contentSchema={contentSchema}
+          selectedRows={selectedRows}
+          mode={mode}
+          onRowChange={handleRowChange}
+          onSelectRow={handleSelectRow}
+          onSelectAllRows={handleSelectAllRows}
+        />
+        {resultMessage && resultMessage.includes("Error:") ? (
+          <div className={styles.msgError}>{resultMessage}</div>
+        ) : (
+          <div className={styles.msgSuccess}>{resultMessage}</div>
+        )}
+        <DisplayTableButtons
+          mode={mode}
+          onAdd={handleAddButtonPress}
+          onEdit={handleEditButtonPress}
+          onDelete={handleDeleteButtonPress}
+          onSave={handleSaveButtonPress}
+          onCancel={handleCancelButtonPress}
+        />
+      </form>
+    );
+  }
+});
+
+export default DisplayTableContainer;
 
 DisplayTableContainer.propTypes = {
   headerText: PropTypes.string.isRequired,

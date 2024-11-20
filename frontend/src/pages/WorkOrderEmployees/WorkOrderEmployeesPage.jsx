@@ -14,7 +14,7 @@ import style from "../../components/DisplayTable/DisplayTableContainer.module.cs
 const tableSchemaTemplate = [
   {
     name: "work_order_id",
-    label: "Work Order ID",
+    label: "Work Order",
     editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
@@ -28,7 +28,7 @@ const tableSchemaTemplate = [
   {
     name: "employee_name",
     label: "Employee",
-    editType: "display",
+    editType: "dropdown",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
     required: true,
@@ -70,7 +70,7 @@ const WorkOrderEmployeesPage = () => {
       setContentSchema( contentSchema =>
         contentSchema.map((field) => {
           if (field.fetchOptions) {
-            if (field.label === "Employee Name") {
+            if (field.label === "Employee") {
               return { ...field, options: employeeNameOptions };
             } else if (field.label === "Work Order") {
               return { ...field, options: workOrderOptions };

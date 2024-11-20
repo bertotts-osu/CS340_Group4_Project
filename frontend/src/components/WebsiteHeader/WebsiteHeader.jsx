@@ -6,7 +6,7 @@ export default function WebsiteHeader() {
   return (
     <div className={styles.content_container}>
       <div className={styles.content_container}>
-        <img src="/gutter.png" className={styles.headerImage}></img>
+        <img src="/gutter.png" className={styles.headerImage} />
         <h1>LeavesFree Eaves </h1>
       </div>
       <NavigationBar />
