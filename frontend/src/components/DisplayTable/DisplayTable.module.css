@@ -5,8 +5,8 @@
   max-height: 600px;
   overflow-x: auto;
   overflow-y: auto;
-  border: 1px solid #223f56;
   margin-bottom: 25px;
+  border: 1.25px solid #223f56;
 }
 
 .table {
@@ -24,8 +24,9 @@
   padding: 6px 8px;
   border: none;
   border-right: 1px solid #223f56;
-  background-color: #5f9084;
-  color: #f8fcf7;
+  background-color: #4a7a6e;
+  color: #fdfffe;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.235);
   text-align: center;
   font-weight: bold;
   width: auto;
@@ -63,8 +64,8 @@
 
 .table tbody tr.active-row {
   font-weight: bold;
-  color: #3e3e3bc6;
-  background-color: #fcf7e0af;
+  color: #4c4c44e0;
+  background-color: #fcf4d8;
 }
 
 .input_container {

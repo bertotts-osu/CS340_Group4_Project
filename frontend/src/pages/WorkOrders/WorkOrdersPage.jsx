@@ -89,7 +89,7 @@ const tableSchemaTemplate = [
       label: "Applied At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
+      required: true,
       invalid: false,
     },
     {
