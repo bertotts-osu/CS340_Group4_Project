@@ -28,7 +28,7 @@ const tableSchemaTemplate = [
   {
     name: "employee_name",
     label: "Employee",
-    editType: "dropdown",
+    editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
     required: true,

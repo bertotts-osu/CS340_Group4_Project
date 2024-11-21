@@ -6,7 +6,7 @@
   overflow-x: auto;
   overflow-y: auto;
   border: 1px solid #223f56;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .table {
@@ -24,8 +24,8 @@
   padding: 6px 8px;
   border: none;
   border-right: 1px solid #223f56;
-  background-color: #008979;
-  color: #ffffff;
+  background-color: #5f9084;
+  color: #f8fcf7;
   text-align: center;
   font-weight: bold;
   width: auto;
@@ -54,7 +54,7 @@
 }
 
 .table tbody tr:nth-of-type(even) {
-  background-color:#4a89bd21 ;
+  background-color:#4a89bd19 ;
 }
 
 .table tbody tr:nth-of-type(odd) {
@@ -63,8 +63,8 @@
 
 .table tbody tr.active-row {
   font-weight: bold;
-  color: #2e5676;
-  background-color: #00796b2b;
+  color: #3e3e3bc6;
+  background-color: #fcf7e0af;
 }
 
 .input_container {
