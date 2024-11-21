@@ -12,7 +12,9 @@ const HomePage = () => {
 
   return (
     <>
-  <HeaderLabel text="Project Overview" className={headerStyle.header}/>
+    <div className={styles.header_container}>
+    <HeaderLabel text="Project Overview" className={headerStyle.header}/>
+    </div>
   <div className={styles.body}>
     <p>
       LeavesFree Eaves is a small business that installs specialized seamless gutters, providing a superior defense against water damage. Last year, the company expanded their area of service, resulting in an increase from 200 to 500 construction projects and generating revenue exceeding $2 million. To meet this demand, employee headcount was doubled, now totaling 10 temporary employees.

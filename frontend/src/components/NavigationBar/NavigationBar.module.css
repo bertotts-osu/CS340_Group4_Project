@@ -3,14 +3,14 @@
     justify-content: center;
     align-items: center;
     padding: 15px 20px;
-    background-color: #7777662b;
+    background-color: #e0e0d1;
     margin-top: 15px;
     margin-bottom: 50px;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     font-style: bold;
     font-size: 16px;
     font-weight: 1000;
-    border: 1px solid #d2d2d2;
+    border: 1px solid #507f73;
     width: 100vw;
     min-height: 30px;
     left: 0;
@@ -32,7 +32,7 @@
   }
   
   .navItem a {
-    color: #5e7972;
+    color: #507f73;
     text-decoration: none;
     padding: 10px 15px;
     border: 2px solid transparent;
@@ -42,6 +42,6 @@
   }
   
   .navItem a:hover {
-    border-bottom: 2px solid #a8a8a1;
-    color: #a8a8a1;
+    border-bottom: 2px solid #a58c3b;
+    color: #a58c3b;
   }

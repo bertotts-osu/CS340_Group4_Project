@@ -1,5 +1,14 @@
 .body {
-    display: flex;
-    flex-direction: column;
-    max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+}
+
+.header_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 700px
 }
