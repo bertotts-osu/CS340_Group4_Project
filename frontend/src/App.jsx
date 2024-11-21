@@ -53,9 +53,7 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="outer-layer">
         <RouterProvider router={router} />
-      </div>
     </QueryClientProvider>
   );
 }

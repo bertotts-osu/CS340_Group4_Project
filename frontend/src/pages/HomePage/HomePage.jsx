@@ -11,7 +11,7 @@ const HomePage = () => {
   }, []); // empty array makes the effect only run once after the initial
 
   return (
-    <div>
+    <>
   <HeaderLabel text="Project Overview" className={headerStyle.header}/>
   <div className={styles.body}>
     <p>
@@ -24,7 +24,7 @@ const HomePage = () => {
       A Resource Management System will effectively resolve these issues by tracking the status of Work Orders, and the Employees, Purchase Orders, and Materials allocated to them. It will be capable of handling 1,000 work orders and purchase orders annually, in addition to 50 employees and 100 material types. Immediate benefits of its database-driven design will include scheduling optimization and project monitoring. Anticipated future benefits of the aggregated historic data include key insights into areas of business health, such as performance metrics, procurement strategy, and customer satisfaction.
     </p>
   </div>
-</div>
+</>
   );
 };
 
