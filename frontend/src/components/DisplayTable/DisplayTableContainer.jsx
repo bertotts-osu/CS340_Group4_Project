@@ -299,7 +299,7 @@ Ensure the data is fetched before displaying the table
 Render the JSX Content
 */
 
-  if (tableData && tableData.length > 0) {
+  if (tableData) {
     return (
       <form
         className={styles.form_container}
