@@ -256,7 +256,7 @@ Handle Form Events
           fieldSchema.invalid = true;
         }
       });
-      setResultMessage("Error: Please fill out all required fields.");
+      setResultMessage("Error: Please fill out all required fields with valid data.");
     } else {
       setResultMessage(false);
       if (changedRows.length > 0) {

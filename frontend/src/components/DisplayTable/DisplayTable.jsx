@@ -71,9 +71,6 @@ export default function DisplayTable({
                   </option>
                 ))}
               </select>
-              {field.invalid && (
-                <span className={styles.error_message}>*Required</span>
-              )}
             </div>
           );
         } else if (
@@ -90,14 +87,13 @@ export default function DisplayTable({
                 onChange={handleChange}
                 step={field.editType === "number" || field.addType === "number" ? field.step : undefined}
                 min={field.editType === "number" || field.addType === "number" ? field.min : undefined}
+                max={field.editType === "number" || field.addType === "number" ? field.max : undefined}
+                maxLength={field.maxLength ? field.maxLength : undefined}
                 pattern={field.pattern ? field.pattern : undefined}
                 className={`${styles.input} ${
                   field.invalid ? styles.invalid : ""
                 }`}
               />
-              {field.invalid && (
-                <span className={styles.error_message}>*Required</span>
-              )}
             </div>
           );
         }

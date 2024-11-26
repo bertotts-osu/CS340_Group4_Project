@@ -55,7 +55,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
-      pattern: "[\\w\\s.,'-]+",
+      maxLength: 255,
     },
     { 
       name: "city",
@@ -64,7 +64,7 @@ const tableSchemaTemplate = [
       addType: "text",
       required: true,
       invalid: false,
-      pattern: "[A-Z]{1}[a-z]+",
+      maxLength: 255,
     },
     { 
       name: "state",

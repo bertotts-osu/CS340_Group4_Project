@@ -24,6 +24,7 @@ const tableSchemaTemplate = [
     editType: "number",
     addType: "number",
     min: "0.00",
+    max: "9999999999.99",
     step: "0.01",
     required: true,
     invalid: false,
@@ -90,12 +91,12 @@ const PurchaseOrderItemsPage = () => {
   
   // Fetch Dropdown options
   const { data: materialOptions } = useQuery({
-    queryKey: ["mterialOptions"],
+    queryKey: ["materialOptions"],
     queryFn: getMaterialOptions,
   });
 
   const { data: purchaseOrderOptions } = useQuery({
-    queryKey: ["workOrderOpurchaseOrderOptionsptions"],
+    queryKey: ["purchaseOrderOptions"],
     queryFn: getPurchaseOrderOptions,
   });
 

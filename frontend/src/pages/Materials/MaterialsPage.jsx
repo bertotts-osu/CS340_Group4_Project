@@ -22,6 +22,7 @@ const tableSchemaTemplate = [
     addType: "text",
     required: true,
     invalid: false,
+    maxLength: 255,
   },
   {
     name: "unit",
@@ -41,6 +42,7 @@ const tableSchemaTemplate = [
     editType: "number",
     addType: "number",
     min: "0.00",
+    max: "9999999999.99",
     step: "0.01",
     required: true,
     invalid: false,
