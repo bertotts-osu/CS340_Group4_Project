@@ -102,10 +102,14 @@ export default function DisplayTable({
           );
         }
       } else {
-
-        if (field.name.includes("_at") && value) {
-          value = formatDateTime(value);
+        if (value) {
+          if (field.name.endsWith("_at")) {
+            value = formatDateTime(value);
+          } else if (field.name.endsWith("_cost")) {
+            value = value.toFixed(2);
+          }
         }
+
         return <span>{value}</span>;
       }
     }
