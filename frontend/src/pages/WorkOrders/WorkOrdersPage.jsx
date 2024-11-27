@@ -30,7 +30,7 @@ const tableSchemaTemplate = [
         { display: "In Progress"},
         { display: "Completed"},
         { display: "On Hold"},
-        { display: "Cancelled"}
+        { display: "Canceled"}
       ],
       required: true,
       invalid: false,
@@ -185,8 +185,8 @@ const tableSchemaTemplate = [
       invalid: false,
     },
     {
-      name: "cancelled_at",
-      label: "Cancelled At",
+      name: "canceled_at",
+      label: "Canceled At",
       editType: "datetime-local",
       addType: "datetime-local",
       required: false,
