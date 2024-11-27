@@ -29,11 +29,9 @@ export default function DisplayTable({
     if (field) {
       // Reset invalid state if the field is valid
       const handleChange = (e) => {
+        // update the row state
+        console.log(e.target.value);
         onRowChange(id, { [field.name]: e.target.value });
-        if (e.target.checkValidity()) {
-          field.invalid = false;
-          e.target.classList.remove("invalid");
-        }
       };
 
       // apply the schema to the values to change their function (display vs input)

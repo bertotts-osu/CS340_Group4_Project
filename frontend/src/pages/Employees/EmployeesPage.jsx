@@ -23,6 +23,7 @@ const tableSchemaTemplate = [
     required: true,
     invalid: false,
     maxLength: 255,
+    pattern: "^([A-Z]{1,2}[a-z]+)?$",
   },
   {
     name: "last_name",
@@ -32,6 +33,7 @@ const tableSchemaTemplate = [
     required: true,
     invalid: false,
     maxLength: 255,
+    pattern: "^([A-Z][a-z]+)?$",
   },
   {
     name: "email",
