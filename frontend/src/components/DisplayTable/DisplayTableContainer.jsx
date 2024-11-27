@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import PropTypes from "prop-types";
-import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
-import DisplayTable from "../DisplayTable/DisplayTable.jsx";
+import HeaderLabel from "../HeaderLabel/HeaderLabel.jsx";
+import DisplayTable from "./DisplayTable.jsx";
 import DisplayTableButtons from "./DisplayTableButtons.jsx";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import styles from "./DisplayTableContainer.module.css";
@@ -42,12 +42,6 @@ Manage API Requests
     queryKey: [headerText],
     queryFn: fetchAPI,
   });
-
-  useEffect(() => {
-    if (dbData) {
-      setTableData(dbData);
-    }
-  }, [dbData]);
 
   // Create New Object
   const { mutate: createObject } = useMutation(createAPI, {
@@ -102,9 +96,14 @@ Manage API Requests
       } else {
         setResultMessage("Successfully deleted!");
       }
+      setTableData((tableData) =>
+        tableData.filter((row) => !selectedRows.includes(row.id))
+      );
+      setInitialData((initialData) =>
+        initialData.filter((row) => !selectedRows.includes(row.id))
+      );
       setSelectedRows([]);
       setChangedRows([]);
-      refetch();
     },
     onError: (error) => {
       if (error.response) {
@@ -152,22 +151,21 @@ Handle Table Events
       (key) => change[key] === initialRow[key]
     );
 
-    if (hasChanged) {
-      // update the table data with the new changes
-      setTableData((tableData) =>
-        tableData.map((row) => (row.id === id ? { ...row, ...change } : row))
+    // update the table data with the new changes
+    setTableData((tableData) =>
+      tableData.map((row) => (row.id === id ? { ...row, ...change } : row))
+    );
+
+    // mark the row as changed
+    setChangedRows((changedRows) => {
+      // check if the row has already been changed
+      const indexOfPreexistingRow = changedRows.findIndex(
+        (row) => row.id === id
       );
-
-      // mark the row as changed
-      setChangedRows((changedRows) => {
-        // check if the row has already been changed
-        const indexOfPreexistingRow = changedRows.findIndex(
-          (row) => row.id === id
-        );
-
+      if (hasChanged) {
         // update the existing changed row
         if (indexOfPreexistingRow !== -1) {
-          const updatedChangedRows = [...changedRows];
+          const updatedChangedRows = [...changedRows]; // create shallow copy
           updatedChangedRows[indexOfPreexistingRow] = {
             ...changedRows[indexOfPreexistingRow],
             ...change,
@@ -177,8 +175,16 @@ Handle Table Events
           // add a new object row with the changes
           return [...changedRows, { ...initialRow, ...change }];
         }
-      });
-    }
+      } else {
+        // remove the row if it was previously updated and has reverted to its initial value
+        if (indexOfPreexistingRow !== -1) {
+          const updatedChangedRows = [...changedRows]; // create shallow copy
+          updatedChangedRows.splice(indexOfPreexistingRow, 1); //removes 1 array element in place
+          return updatedChangedRows;
+        }
+        return changedRows;
+      }
+    });
   };
 
   /*
@@ -201,34 +207,40 @@ Modify the Table Data For Display
 Handle Form Events
 */
 
-  const handleAddButtonPress = useCallback((e) => {
-    e.preventDefault();
-    setSelectedRows([]);
-    const newRow = contentSchema.reduce(
-      (acc, field) => {
-        if (!field.exclude) {
-          acc[field.name] = field.defaultValue || "";
-        }
-        return acc;
-      },
-      { id: tableData.length + 1 }
-    );
+  const handleAddButtonPress = useCallback(
+    (e) => {
+      e.preventDefault();
+      setSelectedRows([]);
+      const newRow = contentSchema.reduce(
+        (acc, field) => {
+          if (!field.exclude) {
+            acc[field.name] = field.defaultValue || "";
+          }
+          return acc;
+        },
+        { id: tableData.length + 1 }
+      );
 
-    setTableData([...tableData, newRow]);
-    setInitialData([...initialData, newRow]);
-    setMode("add");
-    setResultMessage(false);
-  }, [contentSchema, initialData, tableData]);
-
-  const handleEditButtonPress = useCallback((e) => {
-    e.preventDefault();
-    if (selectedRows.length > 0) {
-      setMode("edit");
+      setTableData([...tableData, newRow]);
+      setInitialData([...initialData, newRow]);
+      setMode("add");
       setResultMessage(false);
-    }
-  }, [selectedRows.length]);
+    },
+    [contentSchema, initialData, tableData]
+  );
 
-  const handleDeleteButtonPress = useCallback((e) => {
+  const handleEditButtonPress = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (selectedRows.length > 0) {
+        setMode("edit");
+        setResultMessage(false);
+      }
+    },
+    [selectedRows.length]
+  );
+
+  const handleDeleteButtonPress = (e) => {
     e.preventDefault();
     if (selectedRows.length > 0) {
       const objects2delete = selectedRows.map((row) => {
@@ -242,9 +254,9 @@ Handle Form Events
       });
       deleteObject(objects2delete);
     }
-  }, [deleteObject, selectedRows, tableData]);
+  };
 
-  const handleSaveButtonPress = useCallback((e) => {
+  const handleSaveButtonPress = (e) => {
     e.preventDefault();
     const form = e.target.closest("form");
     const invalidFields = form.querySelectorAll(":invalid");
@@ -256,7 +268,9 @@ Handle Form Events
           fieldSchema.invalid = true;
         }
       });
-      setResultMessage("Error: Please fill out all required fields with valid data.");
+      setResultMessage(
+        "Error: Please fill out all required fields with valid data."
+      );
     } else {
       setResultMessage(false);
       if (changedRows.length > 0) {
@@ -270,21 +284,28 @@ Handle Form Events
         mode === "add" ? createObject(changes[0]) : editObject(changes); //only 1 object can be created at a time
         setSelectedRows([]);
         setMode("display");
+      } else {
+        setResultMessage("No changes made.");
+        setSelectedRows([]);
+        setMode("display");
       }
     }
-  }, [changedRows, contentSchema, createObject, editObject, mode, tableData]);
+  };
 
-  const handleCancelButtonPress = useCallback((e) => {
+  const handleCancelButtonPress = (e) => {
     e.preventDefault();
     if (mode === "add") {
       setTableData((tableData) =>
         tableData.filter((row) => row.id !== tableData.length)
       );
+    } else if (mode === "edit") {
+      setTableData(initialData);
     }
+    setChangedRows([]);
     setSelectedRows([]);
     setMode("display");
     setResultMessage(false);
-  }, [mode]);
+  };
 
   /*
 Ensure the data is fetched before displaying the table
@@ -292,7 +313,11 @@ Ensure the data is fetched before displaying the table
   if (isLoadingDBData) {
     return <div className={headerStyle.header}>Getting data...</div>;
   } else if (isErrorDBData) {
-    return <div className={headerStyle.header}>Error getting data from the database.</div>;
+    return (
+      <div className={headerStyle.header}>
+        Error getting data from the database.
+      </div>
+    );
   }
 
   /*
