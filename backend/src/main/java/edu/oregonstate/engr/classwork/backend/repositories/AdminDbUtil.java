@@ -1,9 +1,11 @@
 package edu.oregonstate.engr.classwork.backend.repositories;
 
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 @Component
 public class AdminDbUtil {
@@ -16,6 +18,10 @@ public class AdminDbUtil {
     }
 
     public void resetDb() {
-        resourceDatabasePopulator.execute(dataSource);
+        try {
+            resourceDatabasePopulator.populate(dataSource.getConnection());
+        } catch (SQLException ex) {
+            throw new CannotGetJdbcConnectionException(ex.getMessage(), ex);
+        }
     }
 }
