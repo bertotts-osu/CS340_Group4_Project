@@ -30,7 +30,6 @@ export default function DisplayTable({
       // Reset invalid state if the field is valid
       const handleChange = (e) => {
         // update the row state
-        console.log(e.target.value);
         onRowChange(id, { [field.name]: e.target.value });
       };
 

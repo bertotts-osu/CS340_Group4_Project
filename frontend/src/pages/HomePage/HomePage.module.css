@@ -12,3 +12,41 @@
   width: 100%;
   max-width: 700px
 }
+
+.buttonContainer {
+  margin-top: 20px;
+}
+
+.button {
+  width: 120px;
+  height: 30px;
+  font-size: 14px;
+  border-radius: 5px;
+  background: #507f73;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.loading {
+  cursor: not-allowed;
+  background-color: grey;
+}
+
+.loading:hover {
+  cursor: not-allowed;
+  background-color: grey;
+}
+
+
+.msgSuccess {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.msgError {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #f03625;
+}
