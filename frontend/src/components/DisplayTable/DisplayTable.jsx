@@ -99,7 +99,7 @@ export default function DisplayTable({
           if (field.name.endsWith("_at")) {
             value = formatDateTime(value);
           } else if (field.name.endsWith("_cost")) {
-            value = value.toFixed(2);
+            value = Number(value).toFixed(2);
           }
         }
 
