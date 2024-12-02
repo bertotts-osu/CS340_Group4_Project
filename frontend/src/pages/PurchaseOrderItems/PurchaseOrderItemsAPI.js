@@ -38,10 +38,23 @@ export async function createPurchaseOrderItem(entry) {
 }
 
 export async function updatePurchaseOrderItems(changes) {
+  const materials = await getMaterialOptions();
+
+  // generate material name/id map
+  const materialMap = materials.reduce((acc, material) => {
+    acc[material.display] = material.value;
+    return acc;
+  }, {});
+
   const promises = changes.map((row) => {
+    // set the material_id attribute based on the material name
+    const updatedRow = {
+      ...row,
+      material_id: materialMap[row.material_name],
+    };
     return axios.put(
       `${import.meta.env.VITE_API_URL}${path}`,
-      row,
+      updatedRow,
       { headers: HEADERS }
     );
   });
