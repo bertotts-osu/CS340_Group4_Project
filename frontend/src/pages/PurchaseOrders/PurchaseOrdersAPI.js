@@ -5,10 +5,9 @@ import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
 const path = "/purchase-orders";
 
 export async function getPurchaseOrders() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}${path}`,
-    { headers:  HEADERS}
-  );
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}${path}`, {
+    headers: HEADERS,
+  });
   return response.data;
 }
 
@@ -38,25 +37,41 @@ export async function createPurchaseOrder(entry) {
 }
 
 export async function updatePurchaseOrders(changes) {
+
+  // Generate an employee name/id map
+  const employees = await getEmployeeNameOptions();
+  const employeeMap = employees.reduce((acc, employee) => {
+    acc[employee.display] = employee.value;
+    return acc;
+  }, {});
+
   const promises = changes.map((row) => {
-    return axios.put(
-      `${import.meta.env.VITE_API_URL}${path}`,
-      row,
-      { headers: HEADERS }
-    );
+      // set the value of employee_id based on the employee name
+    const updatedRow = {
+      ...row,
+      employee_id: employeeMap[row.employee_name],
+    };
+  delete updatedRow.employee_name;
+    return axios.put(`${import.meta.env.VITE_API_URL}${path}`, updatedRow, {
+      headers: HEADERS,
+    });
   });
 
   const results = await Promise.allSettled(promises);
-  const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
-  const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
+  const successes = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value.data);
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => result.reason);
   return { successes, errors };
 }
 
 export async function deletePurchaseOrders(entries) {
   const promises = entries.map((entry) => {
-    const url = `${
-      import.meta.env.VITE_API_URL
-    }${path}?purchase_order_id=${entry.purchase_order_id}`;
+    const url = `${import.meta.env.VITE_API_URL}${path}?purchase_order_id=${
+      entry.purchase_order_id
+    }`;
     return axios.delete(url, {
       headers: { HEADERS },
     });
@@ -92,12 +107,9 @@ export async function getPurchaseOrdersWithEmployeeNames() {
 }
 
 export async function getPurchaseOrderOptions() {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}${path}`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}${path}`, {
+    headers: { "Content-Type": "application/json" },
+  });
   return response.data.map((purchaseOrder) => {
     return {
       value: purchaseOrder.purchase_order_id,
