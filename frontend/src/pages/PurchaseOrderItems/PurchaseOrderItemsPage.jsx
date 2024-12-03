@@ -55,7 +55,8 @@ const tableSchemaTemplate = [
     options: [
       {display: "Ship"},
       {display: "Stock"},
-    ]
+    ],
+    required: true
   },
   {
     name: "purchase_order_id",
