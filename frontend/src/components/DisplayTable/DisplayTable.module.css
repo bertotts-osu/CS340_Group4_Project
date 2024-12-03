@@ -63,8 +63,8 @@
 }
 
 .table tbody tr.active-row {
-  font-weight: bold;
-  color: #4c4c44e0;
+  /*font-weight: bold;*/
+  /*color: #4c4c44e0;*/
   background-color: #fcf4d8;
 }
 
