@@ -298,6 +298,9 @@ Handle Form Events
       setTableData((tableData) =>
         tableData.filter((row) => row.id !== tableData.length)
       );
+      setInitialData((initialData) =>
+          initialData.filter((row) => row.id !== initialData.length)
+      );
     } else if (mode === "edit") {
       setTableData(initialData);
     }
