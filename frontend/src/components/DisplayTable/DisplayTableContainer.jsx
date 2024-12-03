@@ -41,12 +41,12 @@ Manage API Requests
   } = useQuery({
     queryKey: [headerText],
     queryFn: fetchAPI,
+    cacheTime: 0,
   });
 
   // Create New Object
   const { mutate: createObject } = useMutation(createAPI, {
-    onSuccess: (createObject) => {
-      console.log("Success:", createObject);
+    onSuccess: () => {
       setResultMessage("Successfully created!");
       setChangedRows([]);
       setMode("display");
@@ -64,8 +64,7 @@ Manage API Requests
 
   // Update Objects
   const { mutate: editObject } = useMutation(updateAPI, {
-    onSuccess: ({ successes, errors }) => {
-      console.log("Success:", { successes, errors });
+    onSuccess: ({ errors }) => {
       if (errors.length > 0) {
         console.error("Errors:", errors);
         setResultMessage(`Error: ${errors.length} updates failed.`);
@@ -88,8 +87,7 @@ Manage API Requests
 
   // Delete Objects
   const { mutate: deleteObject } = useMutation(deleteAPI, {
-    onSuccess: ({ successes, errors }) => {
-      console.log("Success:", { successes, errors });
+    onSuccess: ({ errors }) => {
       if (errors.length > 0) {
         console.error("Errors:", errors);
         setResultMessage(`Error: ${errors.length} deletions failed.`);
@@ -192,6 +190,7 @@ Modify the Table Data For Display
 */
   // Add row numbers to the table data
   useEffect(() => {
+    console.log(`loading ${headerText} data: ${JSON.stringify(dbData)}`);
     if (dbData && dbData.length > 0) {
       let index = 0;
       const updatedData = dbData.map((row) => {
