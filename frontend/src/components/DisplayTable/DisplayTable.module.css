@@ -79,10 +79,11 @@
   box-sizing: border-box;
   padding: 6px 8px;
   font-size: 14px;
+  border-width: 1px;
 }
 
-.invalid {
-  border: 1.5px solid #f53f2e;
+form :invalid {
+  border: 1px solid #f53f2e;
 }
 
 .error_message {
