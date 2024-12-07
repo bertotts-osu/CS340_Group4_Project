@@ -14,26 +14,7 @@ const tableSchemaTemplate = [
       label: "Work Order ID",
       editType: "display",
       addType: "display",
-      invalid: false,
-      exclude: false,
-    },
-    {
-      name: "stage",
-      label: "Stage",
-      editType: "dropdown",
-      addType: "dropdown",
-      options: [
-        { display: "Applied"},
-        { display: "Estimated"},
-        { display: "Paid"},
-        { display: "Scheduled"},
-        { display: "In Progress"},
-        { display: "Completed"},
-        { display: "On Hold"},
-        { display: "Canceled"}
-      ],
-      required: true,
-      invalid: false,
+      exclude: false
     },
     { 
       name: "size",
@@ -45,8 +26,7 @@ const tableSchemaTemplate = [
         { display: "Medium"},
         { display: "Large"}
       ],
-      required: true,
-      invalid: false,
+      required: true
     },
     { 
       name: "street",
@@ -54,8 +34,8 @@ const tableSchemaTemplate = [
       editType: "text",
       addType: "text",
       required: true,
-      invalid: false,
       maxLength: 255,
+      pattern: "(.|\\s)*\\S(.|\\s)*"
     },
     { 
       name: "city",
@@ -63,8 +43,8 @@ const tableSchemaTemplate = [
       editType: "text",
       addType: "text",
       required: true,
-      invalid: false,
       maxLength: 255,
+      pattern: "(.|\\s)*\\S(.|\\s)*"
     },
     { 
       name: "state",
@@ -124,8 +104,7 @@ const tableSchemaTemplate = [
         { display: "WI"},
         { display: "WY"}
       ],
-      required: true,
-      invalid: false
+      required: true
     },
     { 
       name: "zip",
@@ -133,64 +112,73 @@ const tableSchemaTemplate = [
       editType: "text",
       addType: "text",
       required: true,
-      invalid: false,
-      pattern: "\\d{5}",
+      pattern: "\\d{5}"
+    },
+    {
+      name: "stage",
+      label: "Stage",
+      editType: "dropdown",
+      addType: "dropdown",
+      options: [
+        { display: "Applied"},
+        { display: "Estimated"},
+        { display: "Paid"},
+        { display: "Scheduled"},
+        { display: "In Progress"},
+        { display: "Completed"},
+        { display: "On Hold"},
+        { display: "Canceled"}
+      ],
+      required: true
     },
     {
       name: "applied_at",
       label: "Applied At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: true,
-      invalid: false,
+      required: true
     },
     {
       name: "estimated_at",
       label: "Estimated At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
     {
       name: "scheduled_at",
       label: "Scheduled At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
     {
       name: "started_at",
       label: "Started At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
     {
       name: "completed_at",
       label: "Completed At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
     {
       name: "on_hold_at",
       label: "On Hold At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
     {
       name: "canceled_at",
       label: "Canceled At",
       editType: "datetime-local",
       addType: "datetime-local",
-      required: false,
-      invalid: false,
+      required: false
     },
 ];
 

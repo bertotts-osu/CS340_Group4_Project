@@ -26,8 +26,7 @@ const tableSchemaTemplate = [
     min: "0.00",
     max: "9999999999.99",
     step: "0.01",
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "quantity",
@@ -36,16 +35,14 @@ const tableSchemaTemplate = [
     addType: "number",
     min: "1",
     step: "1",
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "estimated_delivery_date",
     label: "Estimated Delivery",
     editType: "date",
     addType: "date",
-    required: false,
-    invalid: false,
+    required: false
   },
   {
     name: "delivery_type",
@@ -65,11 +62,10 @@ const tableSchemaTemplate = [
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
     required: true,
-    invalid: false,
   },
   {
     name: "material_id",
-    exclude: true,
+    exclude: true
   },
   {
     name: "material_name",
@@ -77,8 +73,7 @@ const tableSchemaTemplate = [
     editType: "dropdown",
     addType: "dropdown",
     fetchOptions: true,  //options to be fetched from API
-    required: true,
-    invalid: false,
+    required: true
   },
 ];
 

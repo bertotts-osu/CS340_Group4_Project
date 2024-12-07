@@ -21,8 +21,8 @@ const tableSchemaTemplate = [
     editType: "text",
     addType: "text",
     required: true,
-    invalid: false,
     maxLength: 255,
+    pattern: "(.|\\s)*\\S(.|\\s)*"
   },
   {
     name: "unit",
@@ -33,8 +33,7 @@ const tableSchemaTemplate = [
       {display: "EA"},
       {display: "FT"},
     ],
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "unit_cost",
@@ -44,8 +43,7 @@ const tableSchemaTemplate = [
     min: "0.00",
     max: "9999999999.99",
     step: "0.01",
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "quantity_available",
@@ -54,8 +52,7 @@ const tableSchemaTemplate = [
     addType: "number",
     min: "0",
     step: "1",
-    required: true,
-    invalid: false,
+    required: true
   },
 ];
 

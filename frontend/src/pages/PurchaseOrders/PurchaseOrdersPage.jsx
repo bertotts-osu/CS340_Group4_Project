@@ -23,8 +23,7 @@ const tableSchemaTemplate = [
     label: "Created At",
     editType: "datetime-local",
     addType: "datetime-local",
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "employee_id",
@@ -37,8 +36,7 @@ const tableSchemaTemplate = [
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
     defaultValue: "",
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "work_order_id",
@@ -46,8 +44,7 @@ const tableSchemaTemplate = [
     editType: "dropdown",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
-    required: false,
-    invalid: false,
+    required: false
   },
 ];
 

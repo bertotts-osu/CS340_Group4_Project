@@ -21,9 +21,8 @@ const tableSchemaTemplate = [
     editType: "text",
     addType: "text",
     required: true,
-    invalid: false,
     maxLength: 255,
-    pattern: "^([A-Z]{1,2}[a-z]+)?$",
+    pattern: "(.|\\s)*\\S(.|\\s)*"
   },
   {
     name: "last_name",
@@ -31,18 +30,16 @@ const tableSchemaTemplate = [
     editType: "text",
     addType: "text",
     required: true,
-    invalid: false,
     maxLength: 255,
-    pattern: "^([A-Z][a-z]+)?$",
+    pattern: "(.|\\s)*\\S(.|\\s)*"
   },
   {
     name: "email",
     label: "Email",
     editType: "email",
     addType: "email",
-    required: true,
-    invalid: false,
-    maxLength: 255,
+    required: false,
+    maxLength: 255
   },
   {
     name: "phone_number",
@@ -50,8 +47,7 @@ const tableSchemaTemplate = [
     editType: "tel",
     addType: "tel",
     pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}",
-    required: true,
-    invalid: false,
+    required: false
   },
   {
     name: "status",
@@ -62,8 +58,7 @@ const tableSchemaTemplate = [
       {display: "Active"},
       {display: "Inactive"}
     ],
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "skill_level",
@@ -75,8 +70,7 @@ const tableSchemaTemplate = [
       {display: "Associate"},
       {display: "Principal"}
     ],
-    required: true,
-    invalid: false,
+    required: true
   }
 ];
 

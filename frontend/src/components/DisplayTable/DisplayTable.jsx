@@ -55,9 +55,7 @@ export default function DisplayTable({
                 value={value || ""}
                 required={field.required}
                 onChange={handleChange}
-                className={`${styles.input} ${
-                  field.invalid ? styles.invalid : ""
-                }`}
+                className={`${styles.input}`}
               >
                 <option value="" disabled>
                   Select {field.label}
@@ -87,9 +85,7 @@ export default function DisplayTable({
                 max={field.editType === "number" || field.addType === "number" ? field.max : undefined}
                 maxLength={field.maxLength ? field.maxLength : undefined}
                 pattern={field.pattern ? field.pattern : undefined}
-                className={`${styles.input} ${
-                  field.invalid ? styles.invalid : ""
-                }`}
+                className={`${styles.input}`}
               />
             </div>
           );
