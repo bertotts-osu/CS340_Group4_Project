@@ -27,6 +27,10 @@ export async function createPurchaseOrder(entry) {
   };
   delete updatedRow.employee_name;
 
+  if (updatedRow["work_order_id"] === "") {
+    updatedRow["work_order_id"] = null;
+  }
+
   // send the http post request
   const response = await axios.post(
     `${import.meta.env.VITE_API_URL}${path}`,
@@ -51,7 +55,12 @@ export async function updatePurchaseOrders(changes) {
       ...row,
       employee_id: employeeMap[row.employee_name],
     };
-  delete updatedRow.employee_name;
+    delete updatedRow.employee_name;
+
+    if (updatedRow["work_order_id"] === "") {
+      updatedRow["work_order_id"] = null;
+    }
+
     return axios.put(`${import.meta.env.VITE_API_URL}${path}`, updatedRow, {
       headers: HEADERS,
     });

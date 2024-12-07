@@ -57,7 +57,7 @@ export default function DisplayTable({
                 onChange={handleChange}
                 className={`${styles.input}`}
               >
-                <option value="" disabled>
+                <option value="" disabled={field.required}>
                   Select {field.label}
                 </option>
                 {field.options.map((option, index) => (
