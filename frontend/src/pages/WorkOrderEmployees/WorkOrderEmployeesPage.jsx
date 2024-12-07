@@ -18,12 +18,11 @@ const tableSchemaTemplate = [
     editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "employee_id",
-    exclude: true,
+    exclude: true
   },
   {
     name: "employee_name",
@@ -31,16 +30,14 @@ const tableSchemaTemplate = [
     editType: "display",
     addType: "dropdown",
     fetchOptions: true, //options to be fetched from API
-    required: true,
-    invalid: false,
+    required: true
   },
   {
     name: "assigned_at",
     label: "Assigned At",
     editType: "datetime-local",
     addType: "datetime-local",
-    required: true,
-    invalid: false,
+    required: true
   },
 ];
 

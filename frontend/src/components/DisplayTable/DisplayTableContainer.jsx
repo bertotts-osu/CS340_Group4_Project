@@ -260,13 +260,6 @@ Handle Form Events
     const form = e.target.closest("form");
     const invalidFields = form.querySelectorAll(":invalid");
     if (invalidFields.length > 0) {
-      // invalidFields.forEach((field) => {
-      //   field.classList.add("invalid");
-      //   const fieldSchema = contentSchema.find((f) => f.name === field.name);
-      //   if (fieldSchema) {
-      //     fieldSchema.invalid = true;
-      //   }
-      // });
       setResultMessage(
         "Error: Please fill out all required fields with valid data."
       );

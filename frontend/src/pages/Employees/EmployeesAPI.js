@@ -12,6 +12,7 @@ export async function getEmployees() {
 }
 
 export async function createEmployee(entry) {
+  nullBlankOptionalFields(entry);
   const response = await axios.post(
     `${import.meta.env.VITE_API_URL}${path}`,
     entry,
@@ -22,6 +23,7 @@ export async function createEmployee(entry) {
 
 export async function updateEmployees(changes) {
   const promises = changes.map((row) => {
+    nullBlankOptionalFields(row);
     return axios.put(
       `${import.meta.env.VITE_API_URL}${path}`,
       row,
@@ -66,4 +68,12 @@ export async function getEmployeeNameOptions() {
       display: employee.first_name + " " + employee.last_name,
     };
   });
+}
+
+function nullBlankOptionalFields(entry) {
+  for (const field of ["email", "phone_number"]) {
+    if (typeof entry[field] === "string" && entry[field].trim().length === 0) {
+      entry[field] = null;
+    }
+  }
 }
