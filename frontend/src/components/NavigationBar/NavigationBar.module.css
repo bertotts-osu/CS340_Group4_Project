@@ -1,8 +1,8 @@
 .navbar {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; /*set as one-dimensional layout*/
+    flex-direction: row; /*order children side by side*/
+    justify-content: center; /*horizontally centers children*/
+    align-items: center; /*vertically centers children*/
     padding: 15px 20px;
     background-color: #e0e0d1;
     margin-top: 15px;
@@ -14,8 +14,6 @@
     border-bottom: 1px solid #507f73;
     width: 100%;
     min-height: 30px;
-    left: 0;
-    right: 0;
   }
   
   .navList {
@@ -28,13 +26,9 @@
     flex-wrap: wrap;
   }
 
-  .navItem {
-    flex: 1 1 auto;
-  }
   
   .navItem a {
     color: #507f73;
-    text-decoration: none;
     padding: 10px 15px;
     border: 2px solid transparent;
     white-space: nowrap;

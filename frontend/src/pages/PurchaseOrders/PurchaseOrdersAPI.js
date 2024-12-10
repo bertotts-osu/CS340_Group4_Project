@@ -2,6 +2,10 @@ import axios from "axios";
 import { HEADERS } from "../config.js";
 import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
 
+/**
+ * This file handles HTTP requests to the PurchaseOrders table.
+ */
+
 const path = "/purchase-orders";
 
 export async function getPurchaseOrders() {
@@ -41,7 +45,6 @@ export async function createPurchaseOrder(entry) {
 }
 
 export async function updatePurchaseOrders(changes) {
-
   // Generate an employee name/id map
   const employees = await getEmployeeNameOptions();
   const employeeMap = employees.reduce((acc, employee) => {
@@ -50,7 +53,7 @@ export async function updatePurchaseOrders(changes) {
   }, {});
 
   const promises = changes.map((row) => {
-      // set the value of employee_id based on the employee name
+    // set the value of employee_id based on the employee name
     const updatedRow = {
       ...row,
       employee_id: employeeMap[row.employee_name],
@@ -66,7 +69,7 @@ export async function updatePurchaseOrders(changes) {
     });
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises); // returns a single promise with an array of objects describing each promises outcome
   const successes = results
     .filter((result) => result.status === "fulfilled")
     .map((result) => result.value.data);
@@ -86,7 +89,7 @@ export async function deletePurchaseOrders(entries) {
     });
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises);  // returns a single promise with an array of objects describing each promises outcome
   const successes = results
     .filter((result) => result.status === "fulfilled")
     .map((result) => result.value.data);

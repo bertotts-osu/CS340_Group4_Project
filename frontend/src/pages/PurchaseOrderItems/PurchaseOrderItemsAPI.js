@@ -2,6 +2,10 @@ import axios from "axios";
 import { HEADERS } from "../config.js";
 import { getMaterialOptions } from "../Materials/MaterialsAPI.js";
 
+/**
+ * This file handles HTTP requests to the PurchaseOrderItems table.
+ */
+
 const path = "/purchase-order-items";
 
 export async function getPurchaseOrderItems() {
@@ -59,7 +63,7 @@ export async function updatePurchaseOrderItems(changes) {
     );
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises); // returns a single promise with an array of objects describing each promises outcome
   const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
   const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
   return { successes, errors };
@@ -75,7 +79,7 @@ export async function deletePurchaseOrderItems(entries) {
     });
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises); // returns a single promise with an array of objects describing each promises outcome
   const successes = results
     .filter((result) => result.status === "fulfilled")
     .map((result) => result.value.data);

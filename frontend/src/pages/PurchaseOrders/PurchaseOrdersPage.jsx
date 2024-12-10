@@ -10,7 +10,16 @@ import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
 import { getWorkOrderOptions } from "../WorkOrders/WorkOrdersAPI.js";
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
+/**
+ * This file provides the abstract Display Table Container component with all of the particulars specific 
+ * to the PurchaseOrders entity. It forwards the API functions, the table title, and a template to dicate the content
+ * behavior and presentation.
+ */
 
+
+// Template is passed to the Display Table along with the raw data to dicate its format and particular
+// cell behavior based on states/modes set by the table container in response to the end user's interaction
+// (i.e display, edit, and add). It also enforces regex validations upon submission.
 const tableSchemaTemplate = [
   {
     name: "purchase_order_id",
@@ -67,7 +76,7 @@ const { data: workOrderOptions } = useQuery({
   queryFn: getWorkOrderOptions,
 });
 
-  // Update the table data schemas
+  // Update the template with the dropdown options
   useEffect(() => {
     if (employeeNameOptions && workOrderOptions) {
       setContentSchema( contentSchema =>

@@ -10,7 +10,15 @@ import { getPurchaseOrderOptions } from "../PurchaseOrders/PurchaseOrdersAPI.js"
 import { getMaterialOptions } from "../Materials/MaterialsAPI.js";
 import DisplayTableContainer from "../../components/DisplayTable/DisplayTableContainer.jsx";
 import style from "../../components/DisplayTable/DisplayTableContainer.module.css";
+/**
+ * This file provides the abstract Display Table Container component with all of the particulars specific 
+ * to the PurchaseOrderItems entity. It forwards the API functions, the table title, and a template to dicate the content
+ * behavior and presentation.
+ */
 
+// Template is passed to the Display Table along with the raw data to dicate its format and particular
+// cell behavior based on states/modes set by the table container in response to the end user's interaction
+// (i.e display, edit, and add). It also enforces regex validations upon submission.
 const tableSchemaTemplate = [
   {
     name: "purchase_order_item_id",
@@ -96,7 +104,7 @@ const PurchaseOrderItemsPage = () => {
     queryFn: getPurchaseOrderOptions,
   });
 
-  // Update the table data schemas
+  // Update the template with the dropdown options
   useEffect(() => {
     if (materialOptions && purchaseOrderOptions) {
       setContentSchema( contentSchema =>

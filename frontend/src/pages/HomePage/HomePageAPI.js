@@ -1,5 +1,8 @@
 import axios from "axios";
-// import { HEADERS } from "../config.js";
+
+/**
+ * This file sends the HTTP request for resetting the database to its initial data as documented in the DDL.sql file.
+ */
 
 export async function resetDatabase() {
   const response = await axios.post(

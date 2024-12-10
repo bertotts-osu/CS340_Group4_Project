@@ -1,6 +1,11 @@
 import axios from "axios";
 import { HEADERS } from "../config.js";
 
+
+/**
+ * This file handles HTTP requests to the WorkOrders table.
+ */
+
 const path = "/work-orders";
 
 export async function getWorkOrders() {
@@ -29,7 +34,7 @@ export async function updateWorkOrders(changes) {
     );
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises); // returns a single promise with an array of objects describing each promises outcome
   const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
   const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
   return { successes, errors };
@@ -45,7 +50,7 @@ export async function deleteWorkOrders(entries) {
     });
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises);  // returns a single promise with an array of objects describing each promises outcome
   const successes = results
     .filter((result) => result.status === "fulfilled")
     .map((result) => result.value.data);
