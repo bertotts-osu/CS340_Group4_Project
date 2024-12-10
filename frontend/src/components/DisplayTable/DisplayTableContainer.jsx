@@ -200,7 +200,7 @@ Modify the Table Data For Display
       setTableData(updatedData);
       setInitialData(updatedData);
     }
-  }, [dbData]);
+  }, [dbData, headerText]);
 
   /*
 Handle Form Events

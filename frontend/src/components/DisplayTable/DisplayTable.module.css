@@ -1,25 +1,22 @@
 .tableContainer {
-  display: grid;
-  grid-template-rows: auto 1fr;
   width: 100%;
   max-height: 600px;
   overflow-x: auto;
   overflow-y: auto;
-  margin-bottom: 25px;
   border: 1.25px solid #223f56;
 }
 
 .table {
   min-width: 100%;
   table-layout: auto;
-  border-collapse: collapse;
+  border-collapse: collapse; /*merges all of the cell borders*/
   border: none;
   font-size: 14px;
   text-align: center;
 }
 
 .table th {
-  position: sticky;
+  position: sticky; /*freezes table headers when scrolling down*/
   top: 0;
   padding: 6px 8px;
   border: none;
@@ -63,8 +60,6 @@
 }
 
 .table tbody tr.active-row {
-  /*font-weight: bold;*/
-  /*color: #4c4c44e0;*/
   background-color: #fcf4d8;
 }
 

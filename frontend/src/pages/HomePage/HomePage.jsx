@@ -4,13 +4,16 @@ import HeaderLabel from "../../components/HeaderLabel/HeaderLabel.jsx";
 import { resetDatabase } from "./HomePageAPI.js";
 import styles from "./HomePage.module.css";
 import headerStyle from "../../components/HeaderLabel/HeaderLabel.module.css";
+/**
+ * This file displays the landing page content for the application. It includes the project overview 
+ * and a button to revert the database to its intial values based on the DDL.sql file.
+ */
 
 // define HomePage as a functional component
-// updates the browser tab title as a side effect to loading this component
 const HomePage = () => {
   useEffect(() => {
     document.title = "LeavesFree Eaves - Home";
-  }, []); // empty array makes the effect only run once after the initial
+  }, []); // empty array makes the effect only run once after the initial render
 
   // define variable states
   const [resultMessage, setResultMessage] = useState(false);

@@ -2,6 +2,11 @@ import axios from "axios";
 import { HEADERS } from "../config.js";
 import { getEmployeeNameOptions } from "../Employees/EmployeesAPI.js";
 
+
+/**
+ * This file handles HTTP requests to the WorkOrderEmployees table.
+ */
+
 const path = "/work-order-employees";
 
 export async function getWorkOrderEmployees() {
@@ -46,7 +51,7 @@ export async function updateWorkOrderEmployees(changes) {
     );
   });
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises); // returns a single promise with an array of objects describing each promises outcome
   const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
   const errors = results.filter(result => result.status === 'rejected').map(result => result.reason.response); 
   return { successes, errors };
@@ -60,7 +65,7 @@ export async function deleteWorkOrderEmployees(entries) {
     );
   });
 
-const results = await Promise.allSettled(promises);
+const results = await Promise.allSettled(promises);  // returns a single promise with an array of objects describing each promises outcome
 const successes = results.filter(result => result.status === 'fulfilled').map(result => result.value.data); 
 const errors = results.filter(result => result.status === 'rejected').map(result => result.reason); 
 return { successes, errors };

@@ -1,14 +1,14 @@
 .body {
-  display: flex;
-  flex-direction: column;
+  display: flex; /*set as one-dimensional layout*/
+  flex-direction: column; /*order children one above the other*/
   max-width: 700px;
 }
 
 .header_container {
+  /*left-aligns the section title with the current content*/
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+  align-items: left;
   width: 100%;
   max-width: 700px
 }
@@ -26,7 +26,6 @@
   color: #ffffff;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .loading {
