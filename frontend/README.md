@@ -35,5 +35,5 @@ Follow these steps to get the frontend running on the production server:
 
 ## Citation
 - Date: 12/09/2024
-- Based on: This project was developed with knowledge gained from the course React - The Complete Guide 2024 on Udemy. The use of the TanStack library and the general project structure were directly inspired from this course. The actual components and pages are original but are based on topics covered in the course.
+- Based on: This project was developed with knowledge gained from the course, "React - The Complete Guide 2024" on Udemy. The use of the TanStack library and the general project structure were directly inspired from this course. The actual components and pages are original but are based on topics covered in the course.
 - Source URL: https://www.udemy.com/course/react-the-complete-guide-incl-redux/
