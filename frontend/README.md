@@ -8,7 +8,6 @@ This directory houses the frontend of the application. The frontend is built wit
 - Make sure **Vite** is installed globally: - npm install -g vite
 
 ## Development Setup Follow these steps to get the frontend running on a local machine for development:
-- Set the host to 'localhost' in the **vite.config.js** file
 - Add the following to the **scripts** section of the **package.json**
     - "dev": "vite", 
 - Build the development environment with **Vite** 
@@ -18,7 +17,6 @@ This directory houses the frontend of the application. The frontend is built wit
     
 ## Production Setup 
 Follow these steps to get the frontend running on the production server:
-- Set the host and port in the **vite.config.js** file
 - Install the **forever** library 
     - npm install forever -save 
 - Set an alias for the **forever** library, so it is recognized on the server
